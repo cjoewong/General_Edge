@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-from DataCollectorBase import DataCollectorBase
+from data_collector_base import DataCollectorBase
 
 
 class LinearRegressionDataCollector(DataCollectorBase):
-    """
+    """Linear Regression Data Collector
+
+    Currently, we directly to load data from CSV files instead of collecting
+    from real sensors.
 
     """
 
