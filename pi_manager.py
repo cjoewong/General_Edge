@@ -64,8 +64,8 @@ if __name__ == '__main__':
         raise RuntimeError("Error role of pi-{0}".format(args.pi_name))
 
     # Use reflection to dynamically new isntance
-    class_path = my_config.get("class_path")
-    class_name = my_config.get("class_name")
+    class_path = my_config.get("classPath")
+    class_name = my_config.get("className")
 
     m = __import__(class_path)
     clz = m.getattr(m, class_name)
