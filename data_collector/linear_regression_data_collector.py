@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from data_collector_base import DataCollectorBase
+from .data_collector_base import DataCollectorBase
 
 
 class LinearRegressionDataCollector(DataCollectorBase):
@@ -14,11 +14,13 @@ class LinearRegressionDataCollector(DataCollectorBase):
     def __init__(self):
         pass
 
-    def init(self, *file_paths):
-        assert(len(file_paths) != 0)
-        self._file_paths = [p for p in file_paths]
+    def init(self, config):
+        self._file_paths = config.get("dataFilePaths")
 
     def cleanup(self):
+        pass
+
+    def send(self):
         pass
 
     def run(self):

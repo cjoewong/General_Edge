@@ -1,8 +1,10 @@
 sensorPiA:
   role: DataCollector
-  classPath: data_collector.linear_regression_data_collector
+  classPath: data_collector
   className: LinearRegressionDataCollector
-  downSream: gatewayPiA
+  dataFilePaths:
+    - runtime.log
+  downStream: gatewayPiA
 
 gatewayPiA:
   role: Algorithm

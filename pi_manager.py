@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import argparse
-import logging
+import logging.config
 import time
 import yaml
+import importlib
 
-import utils.bluetootch_utils as BT
+#import utils.bluetootch_utils as BT
 from utils.dependency_handler import DependencyHandler
 
 
@@ -30,7 +31,7 @@ if __name__ == '__main__':
     parser.add_argument("-v", "--verbosity",
                         action="store_true",
                         help="The log level")
-    parser.add_arguemnt("-l", "--logconfig",
+    parser.add_argument("-l", "--logconfig",
                         default="./configuration/logconfig.ini",
                         help="The log configuration file")
     args = parser.parse_args()
@@ -41,7 +42,9 @@ if __name__ == '__main__':
     logger.info("Start....")
     # Read the configuration file
     logger.info("Parsing configuration file...")
-    global_config = yaml.load(args.cfg_file_path)
+    global_config = {}
+    with open(args.cfg_file_path) as f:
+        global_config = yaml.load(f)
 
     # Resolve pis' dependencies
     dependency_handler = DependencyHandler(global_config)
@@ -63,17 +66,18 @@ if __name__ == '__main__':
     else:
         raise RuntimeError("Error role of pi-{0}".format(args.pi_name))
 
-    # Use reflection to dynamically new isntance
+    # Use reflection to dynamically new instance
     class_path = my_config.get("classPath")
     class_name = my_config.get("className")
 
-    m = __import__(class_path)
-    clz = m.getattr(m, class_name)
+    m = importlib.import_module("data_collector")
+
+    clz = getattr(m, class_name)
 
     logger.info("Run worker...")
     t1 = time.time()
     worker = clz()
-    worker.init()
+    worker.init(my_config)
     worker.run()
     worker.send()
     worker.cleanup()

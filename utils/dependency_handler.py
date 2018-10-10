@@ -20,8 +20,10 @@ class DependencyHandler(object):
         """
         for name, info in self._global_cfg.items():
             down_stream = info.get("downStream")
-            prerequisites = self._dependencies.get(down_stream, set())
-            prerequisites.add(name)
+            if down_stream is not None and down_stream != name:
+                prerequisites = self._dependencies.get(down_stream, set())
+                prerequisites.add(name)
+                self._dependencies[down_stream] = prerequisites
 
     def add_resolved_dependency(self, piA, piB):
         """
@@ -41,4 +43,4 @@ class DependencyHandler(object):
 
         @return true/false Indicate if the dependencies resolved or not
         """
-        return len(self._dependencies.get(pi_name)) == 0
+        return self._dependencies.get(pi_name) is None or len(self._dependencies.get(pi_name)) == 0

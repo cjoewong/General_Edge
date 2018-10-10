@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-from abc import ABCMeta, abstractmethod
-
-
-class DataCollectorBase(metaClass=ABCMeta):
+class DataCollectorBase():
     """
 
     """
@@ -18,6 +15,8 @@ class DataCollectorBase(metaClass=ABCMeta):
     def cleanup(self):
         pass
 
-    @abstractmethod
+    def send(self):
+        pass
+
     def run(self):
         pass
