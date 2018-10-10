@@ -50,7 +50,7 @@ def listenOnBluetooth(channel):
     end_time = time.time()
     bt_time = end_time - start_time
 
-    logger.info("Bluetooth Transmission Time %f", btTime)
+    logger.info("Bluetooth Transmission Time %f", bt_time)
 
     # Close the bluetooth connection
     client_sock.close()
