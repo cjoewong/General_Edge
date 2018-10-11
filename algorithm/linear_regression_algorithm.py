@@ -30,7 +30,6 @@ class LinearRegression(AlgorithmBase):
         X = np.array(X)
         y = np.array(y)
 
-        print(X)
         if local:
             return self.gradient_descent(X, y)
         else:
@@ -48,7 +47,7 @@ class LinearRegression(AlgorithmBase):
 
         for epoch in range(self.epochs):
             pred = X.dot(self.w) + self.b
-            dloss = pred - y
+            dloss = pred - y[:,None]
             dw = np.dot(X.T,dloss)/X.shape[0]
             db = np.sum(dloss)/X.shape[0]
             self.w -= self.lr * dw
