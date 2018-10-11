@@ -1,7 +1,6 @@
 import bluetooth
 import time
 import pickle
-import cPickle
 import logging
 
 def listenOnBluetooth(channel):
@@ -46,6 +45,10 @@ def listenOnBluetooth(channel):
         bluetooth.stop_advertising(server_sock)
         # sys.exit()    Why do we need an exit before we're actually done?
 
+    except Exception:
+        print('No data is received, waiting...')
+        time.sleep(5)
+
     # Log the results of the bluetooth data to the console
     end_time = time.time()
     bt_time = end_time - start_time
@@ -67,15 +70,21 @@ def sendData(data, target_address, channel):
     start_time = time.time()
 
     # Establish BT connection
-    sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    sock.connect((target_address, channel))
+    while True:
+        try: 
+            sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+            sock.connect((target_address, channel))
 
-    # Send data
-    data_to_send = cPickle.dumps(data)
-    data_size = len(data_to_send)
-    bytes_sent = sock.send(data_to_send)
+            # Send data
+            data_to_send = pickle.dumps(data)
+            data_size = len(data_to_send)
+            bytes_sent = sock.send(data_to_send)
 
-    sock.close()
+            sock.close()
+            break
+        except Exception:
+            print('Dest is not available, try in 5s...')
+            time.sleep(5)    
 
     end_time = time.time()
     bt_time = end_time - start_time
