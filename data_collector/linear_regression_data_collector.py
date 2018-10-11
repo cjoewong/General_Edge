@@ -40,4 +40,4 @@ class LinearRegressionDataCollector(DataCollectorBase):
                     raw_data.append(attr)
 
         print('Collect data: {0}'.format(len(raw_data)))
-        self._data = {"from_pi": self._config}
+        self._data = {"from_pi": self._name, "data": raw_data}

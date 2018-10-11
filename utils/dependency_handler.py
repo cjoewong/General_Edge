@@ -31,6 +31,8 @@ class DependencyHandler(object):
         """
         try:
             prerequisites = self._dependencies.get(piB)
+            print(prerequisites)
+            print(piA)
             prerequisites.remove(piA)
         except KeyError:
             self._logger.error("Invalid PiB - {0}".format(piB))

@@ -59,7 +59,7 @@ def listenOnBluetooth(channel):
     client_sock.close()
     server_sock.close()
 
-    return bt_time, pickle.loads(''.join(total_data))
+    return bt_time, pickle.loads(b''.join(total_data))
 
 
 def sendData(data, target_address, channel):

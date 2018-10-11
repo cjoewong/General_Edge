@@ -51,9 +51,13 @@ if __name__ == '__main__':
     dependency_handler = DependencyHandler(global_config)
 
     # schedule
+    train_data = []
     while not dependency_handler.dependency_resolved(args.pi_name):
         logger.info("Waiting for Pi-{0}'s dependencies...".format(args.pi_name))
         bt_time, recv_data = BT.listenOnBluetooth(1)
+        print(type(recv_data))
+        print(recv_data)
+        train_data.append(recv_data)
         from_pi = recv_data.get('from_pi')
         dependency_handler.add_resolved_dependency(from_pi, args.pi_name)
 

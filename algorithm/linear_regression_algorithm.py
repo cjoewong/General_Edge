@@ -17,7 +17,16 @@ class LinearRegression(AlgorithmBase):
         self.w = None
         self.b = None
 
-    def run(self, X, y, local=True):
+    def run(self, **kwargs):
+        local = kwargs.get("local", True)
+        train_data = kwargs.get("train_data", [])
+        X = []
+        y = []
+        for data in train_data:
+            for row in data.get("data"):
+                X.append(list(map(lambda x : float(x), row[:-1])))
+                y.append(float(row[-1]))
+                
         if local:
             return self.gradient_descent(X, y)
         else:

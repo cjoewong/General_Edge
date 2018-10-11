@@ -14,7 +14,7 @@ class AlgorithmBase:
     def cleanup(self):
         raise RuntimeError("Need to be implemented!")
 
-    def run(self):
+    def run(self, **kwargs):
         raise RuntimeError("Need to be implemented!")
 
     def send(self, down_addr):
