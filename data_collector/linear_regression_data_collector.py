@@ -34,7 +34,7 @@ class LinearRegressionDataCollector(DataCollectorBase):
             with open(p, 'r') as f:
                 for line in f:
                     attr = [0]
-                    attr.extend(line.split(',')[1:])
+                    attr.extend(line.strip().split(',')[1:])
                     if len(attr) != 4:
                         continue
                     raw_data.append(attr)

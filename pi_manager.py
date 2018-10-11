@@ -81,9 +81,10 @@ if __name__ == '__main__':
 
     try:
         down_stream = my_config.get("downStream")
-        if down_stream is not None:
-            down_addr = global_config.get(down_stream).get("btAddress")
-    except KeyError:
+        if down_stream is None:
+            raise RuntimeError()
+        down_addr = global_config.get(down_stream).get("btAddress")
+    except Exception:
         logger.warn("Pi-{0} has no down stream, right?".format(args.pi_name))
         down_addr = ""
 
