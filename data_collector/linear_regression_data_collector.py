@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from .data_collector_base import DataCollectorBase
-
+from ..utils import bluetootch_utils
 
 class LinearRegressionDataCollector(DataCollectorBase):
     """Linear Regression Data Collector
@@ -14,14 +14,19 @@ class LinearRegressionDataCollector(DataCollectorBase):
     def __init__(self):
         pass
 
-    def init(self, config):
+    def init(self, name, config):
+        self._name = name
+        self._config = config
         self._file_paths = config.get("dataFilePaths")
+        self._data = None
 
     def cleanup(self):
         pass
 
-    def send(self):
-        pass
+    def send(self, down_addr):
+        """Send data to the downStream Pi
+        """
+        bluetootch_utils.sendData(self._data, down_addr, 1)
 
     def run(self):
         raw_data = []
@@ -35,4 +40,4 @@ class LinearRegressionDataCollector(DataCollectorBase):
                     raw_data.append(attr)
 
         print(f'Collect data: {len(raw_data)}')
-        return raw_data
+        self._data = {"from_pi": self._config}
