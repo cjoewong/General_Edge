@@ -23,6 +23,7 @@ def init_logger(config_path, verbosity):
 
 
 if __name__ == '__main__':
+    print('Start...')
     parser = argparse.ArgumentParser()
     parser.add_argument("cfg_file_path",
                         help="The path of configuration file")
@@ -74,13 +75,22 @@ if __name__ == '__main__':
 
     clz = getattr(m, class_name)
 
+    try:
+        down_stream = my_config.get("downStream")
+        down_addr = global_config.get(down_stream).get("btAddress")
+    except KeyError:
+        logger.warn("Pi-{0} has no down stream, right?".format(args.pi_name))
+        down_addr = ""
+
     logger.info("Run worker...")
+
     t1 = time.time()
     worker = clz()
-    worker.init(my_config)
+    worker.init(args.pi_name, my_config)
     worker.run()
-    worker.send()
+    worker.send(down_addr)
     worker.cleanup()
     t2 = time.time()
 
     logger.info("End....")
+    print("End...")

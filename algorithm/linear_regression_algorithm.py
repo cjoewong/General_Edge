@@ -1,9 +1,15 @@
 import numpy as np
+import time
 from AlgorithmBase import AlgorithmBase
+
 
 class LinearRegression(AlgorithmBase):
 
-    def __init__(self, config):
+    def __init__(self):
+        pass
+
+    def init(self, name, config):
+        self._name = name
         self._config = config
         self.lr = 0.01
         self.lambd = 0.1
@@ -46,3 +52,10 @@ class LinearRegression(AlgorithmBase):
 
     def init_b(self, dim0):
         return np.zeros((dim0, 1))
+
+    def send(self, down_addr):
+        print("TO BE IMPLEMENTED")
+        time.sleep(3)
+        print("TO BE IMPLEMENTED")
+        time.sleep(3)
+        print("TO BE IMPLEMENTED")

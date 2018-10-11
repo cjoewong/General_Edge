@@ -5,17 +5,17 @@ class AlgorithmBase:
     Interface for the algorithm part
     """
 
-    def __init__(self, config):
-        self._config = config
-
-    def init(self):
+    def __init__(self):
         pass
+
+    def init(self, name, config):
+        raise RuntimeError("Need to be implemented!")
 
     def cleanup(self):
-        pass
+        raise RuntimeError("Need to be implemented!")
 
     def run(self):
-        pass
+        raise RuntimeError("Need to be implemented!")
 
-    def upload(self):
-        pass
+    def send(self, down_addr):
+        raise RuntimeError("Need to be implemented!")
