@@ -1,6 +1,6 @@
 import numpy as np
 import time
-from AlgorithmBase import AlgorithmBase
+from .algorithm_base import AlgorithmBase
 
 
 class LinearRegression(AlgorithmBase):
@@ -26,7 +26,11 @@ class LinearRegression(AlgorithmBase):
             for row in data.get("data"):
                 X.append(list(map(lambda x : float(x), row[:-1])))
                 y.append(float(row[-1]))
-                
+
+        X = np.array(X)
+        y = np.array(y)
+
+        print(X)
         if local:
             return self.gradient_descent(X, y)
         else:
@@ -43,9 +47,9 @@ class LinearRegression(AlgorithmBase):
             self.b = 0
 
         for epoch in range(self.epochs):
-            pred = X@self.w + self.b
+            pred = X.dot(self.w) + self.b
             dloss = pred - y
-            dw = X.T@dloss/X.shape[0]
+            dw = np.dot(X.T,dloss)/X.shape[0]
             db = np.sum(dloss)/X.shape[0]
             self.w -= self.lr * dw
             self.b -= self.lr * db

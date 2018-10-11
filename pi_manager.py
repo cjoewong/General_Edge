@@ -75,13 +75,14 @@ if __name__ == '__main__':
     class_path = my_config.get("classPath")
     class_name = my_config.get("className")
 
-    m = importlib.import_module("data_collector")
+    m = importlib.import_module(class_path)
 
     clz = getattr(m, class_name)
 
     try:
         down_stream = my_config.get("downStream")
-        down_addr = global_config.get(down_stream).get("btAddress")
+        if down_stream is not None:
+            down_addr = global_config.get(down_stream).get("btAddress")
     except KeyError:
         logger.warn("Pi-{0} has no down stream, right?".format(args.pi_name))
         down_addr = ""

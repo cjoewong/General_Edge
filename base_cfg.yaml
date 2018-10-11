@@ -9,7 +9,7 @@ sensorPiA:
 
 gatewayPiA:
   role: Algorithm
-  classPath: algorithm.linear_regression_algorithm
+  classPath: algorithm
   className: LinearRegression
   btAddress: B8:27:EB:F3:2D:09
 
