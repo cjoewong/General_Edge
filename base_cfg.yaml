@@ -20,7 +20,7 @@ sensorPiB:
   role: DataCollector
   classPath: data_collector
   className: LinearRegressionDataCollector
-  btAddress: B8:27:EB:D3:D7:AF
+  btAddress: B8:27:EB:0E:3A:E6
   dataFilePaths:
     - data/data_B
   downStream: gatewayPiB
@@ -28,9 +28,27 @@ sensorPiB:
 gatewayPiB:
   role: Algorithm
   classPath: algorithm
-  local: false
   className: LinearRegression
-  btAddress: B8:27:EB:A9:3E:19
+  btAddress: B8:27:EB:49:FE:C6
   downStream: sensingdata_B
   room: roomB
   sensor: sensorB
+
+sensorPiC:
+  role: DataCollector
+  classPath: data_collector
+  className: LinearRegressionDataCollector
+  btAddress: B8:27:EB:D3:D7:AF
+  dataFilePaths:
+    - data/data_C
+  downStream: gatewayPiC
+
+gatewayPiC:
+  role: Algorithm
+  classPath: algorithm
+  local: false
+  className: LinearRegression
+  btAddress: B8:27:EB:A9:3E:19
+  downStream: sensingdata_C
+  room: roomC
+  sensor: sensorC
