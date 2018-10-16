@@ -28,7 +28,7 @@ class LinearRegressionDataCollector(DataCollectorBase):
         """
         bluetootch_utils.sendData(self._data, down_addr, 1)
 
-    def run(self):
+    def run(self, **kwargs):
         raw_data = []
         for p in self._file_paths:
             with open(p, 'r') as f:
