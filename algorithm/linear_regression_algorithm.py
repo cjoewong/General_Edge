@@ -97,7 +97,7 @@ class LinearRegression(AlgorithmBase):
                 currentItem['X_2']     = Decimal(str(X[i][0]))    # Pressure
                 currentItem['X_3']     = Decimal(str(X[i][1]))    # Humidity
                 currentItem['Y']       = Decimal(str(y[i]))    # Temperature
-            aggregatedItems.append(currentItem)
+                aggregatedItems.append(currentItem)
             item['aggregated_data'] = aggregatedItems
         else:
             w = self._down_stream_data.get('w')
