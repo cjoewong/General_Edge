@@ -93,7 +93,7 @@ class LinearRegression(AlgorithmBase):
 
             for i in range(numOfRows):
                 currentItem = {}
-                currentItem['X_1']     = Decimal(str(x[i][0]))    # Time
+                currentItem['X_1']     = Decimal(str(X[i][0]))    # Time
                 currentItem['X_2']     = Decimal(str(X[i][1]))    # Pressure
                 currentItem['X_3']     = Decimal(str(X[i][2]))    # Humidity
                 currentItem['Y']       = Decimal(str(y[i]))    # Temperature
