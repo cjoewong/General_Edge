@@ -14,9 +14,9 @@ class LinearRegression(AlgorithmBase):
     def init(self, name, config):
         self._name = name
         self._config = config
-        self._lr = 0.01
+        self._lr = 0.0001
         self._lambd = 0.1
-        self._epochs = 50
+        self._epochs = 1
         self._local = None
         self._down_stream_data = None
         self._logger = logging.getLogger('')
@@ -54,17 +54,26 @@ class LinearRegression(AlgorithmBase):
         pass
 
     def gradient_descent(self, X, y):
-        w = np.zeros(X.shape[1], 1)
+        print(X)
+        print(y)
+        w = np.zeros((X.shape[1], 1))
         b = 0
 
         for epoch in range(self._epochs):
             pred = X.dot(w) + b
+            print(pred)
+            print(y)
             dloss = pred - y[:, None]
+            print("dloss")
+#            print(dloss)
             dw = np.dot(X.T, dloss)/X.shape[0]
+            print("dw")
+            print(dw)
             db = np.sum(dloss)/X.shape[0]
             w -= self._lr * dw
             b -= self._lr * db
-        return w, b
+            print(w)
+        return np.around(w, decimals=4), np.around(b, decimals=4)
 
     def send(self, down_addr):
         self._logger.info('LinearRegression send start...')
