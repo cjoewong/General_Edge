@@ -62,39 +62,39 @@ class LinearRegression(AlgorithmBase):
         delta_E = np.zeros((len(designMatrix), 3))
         learning_rate = 0.001
         # tolerance = 1e-5
-    while True:
-        w_old = w_new
+        while True:
+            w_old = w_new
 
-        for i in range(len(designMatrix)):
-            delta_E[i,:] = delta_E[i,:] + (targetMatrix[i][0] - np.dot(np.matrix(designMatrix[i,:]), np.matrix(w_old))) * designMatrix[i,:]
+            for i in range(len(designMatrix)):
+                delta_E[i,:] = delta_E[i,:] + (targetMatrix[i][0] - np.dot(np.matrix(designMatrix[i,:]), np.matrix(w_old))) * designMatrix[i,:]
             print delta_E[i, :]
+            
+            w_new = w_old + learning_rate * np.matrix(delta_E[i, :] / (len(designMatrix))).T
+            E_old = E_new
 
-        w_new = w_old + learning_rate * np.matrix(delta_E[i, :] / (len(designMatrix))).T
-        E_old = E_new
+            for i in range(len(designMatrix)):
+                E_new = E_new + (targetMatrix[i][0] - np.dot(np.matrix(designMatrix[i, :]), np.matrix(w_new))) ** 2
+                E_new = E_new / 2
 
-        for i in range(len(designMatrix)):
-            E_new = E_new + (targetMatrix[i][0] - np.dot(np.matrix(designMatrix[i, :]), np.matrix(w_new))) ** 2
-            E_new = E_new / 2
+            if E_new > E_old:
+                learning_rate = learning_rate / 2
 
-        if E_new > E_old:
-            learning_rate = learning_rate / 2
-
-        count = count + 1
-        # print("E_new", E_new, "E_old", E_old)
-        if count % 20 == 0:
-            # print(" ".join[count, "iterations so far..."])
-            print(str(count), " iterations so far...")
+            count = count + 1
+            # print("E_new", E_new, "E_old", E_old)
+            if count % 20 == 0:
+                # print(" ".join[count, "iterations so far..."])
+                print(str(count), " iterations so far...")
 
         # Test if restricting iterations affects the quality
-        if count == 50:
-            break
+            if count == 50:
+                break
 
-        # Comparing E_new == E_old is tricky because of precision.
-        #if np.isclose(E_new, E_old)[0]:
-        #print("Escaped loop after", str(count), "iterations.")
-        #break
+            # Comparing E_new == E_old is tricky because of precision.
+            #if np.isclose(E_new, E_old)[0]:
+            #print("Escaped loop after", str(count), "iterations.")
+            #break
 
-        return w_new
+            return w_new
  """  print(X)
         print(y)
         w = np.zeros((X.shape[1], 1))
