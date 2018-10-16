@@ -67,7 +67,7 @@ class LinearRegression(AlgorithmBase):
 
             for i in range(len(designMatrix)):
                 delta_E[i,:] = delta_E[i,:] + (targetMatrix[i][0] - np.dot(np.matrix(designMatrix[i,:]), np.matrix(w_old))) * designMatrix[i,:]
-            print delta_E[i, :]
+            print (delta_E[i, :])
             
             w_new = w_old + learning_rate * np.matrix(delta_E[i, :] / (len(designMatrix))).T
             E_old = E_new
