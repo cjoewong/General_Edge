@@ -68,7 +68,7 @@ if __name__ == '__main__':
         pass
     else:
         raise RuntimeError("Error role of pi-{0}".format(args.pi_name))
-
+    local = True my_config.get("local") == true else False
     # Use reflection to dynamically new instance
     class_path = my_config.get("classPath")
     class_name = my_config.get("className")
