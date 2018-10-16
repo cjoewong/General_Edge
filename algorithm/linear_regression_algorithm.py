@@ -54,6 +54,7 @@ class LinearRegression(AlgorithmBase):
         pass
 
     def gradient_descent(self, designMatrix, targetMatrix):
+        targetMatrix = targetMatrix[:,None]
         count = 0
         w_old = np.zeros((3, 1))
         w_new = np.zeros((3, 1))
@@ -66,14 +67,14 @@ class LinearRegression(AlgorithmBase):
             w_old = w_new
 
             for i in range(len(designMatrix)):
-                delta_E[i,:] = delta_E[i,:] + (targetMatrix[i][0] - np.dot(np.matrix(designMatrix[i,:]), np.matrix(w_old))) * designMatrix[i,:]
-            print delta_E[i, :]
+                delta_E[i,:] = delta_E[i,:] + (targetMatrix[i] - np.dot(np.matrix(designMatrix[i,:]), np.matrix(w_old))) * designMatrix[i,:]
+
 
             w_new = w_old + learning_rate * np.matrix(delta_E[i, :] / (len(designMatrix))).T
             E_old = E_new
 
             for i in range(len(designMatrix)):
-                E_new = E_new + (targetMatrix[i][0] - np.dot(np.matrix(designMatrix[i, :]), np.matrix(w_new))) ** 2
+                E_new = E_new + (targetMatrix[i]- np.dot(np.matrix(designMatrix[i, :]), np.matrix(w_new))) ** 2
                 E_new = E_new / 2
 
             if E_new > E_old:
@@ -93,8 +94,8 @@ class LinearRegression(AlgorithmBase):
             #if np.isclose(E_new, E_old)[0]:
             #print("Escaped loop after", str(count), "iterations.")
             #break
-
-        return w_new
+        print(w_new)
+        return w_new, 0
         """
         w = np.zeros((X.shape[1], 1))
         b = 0
