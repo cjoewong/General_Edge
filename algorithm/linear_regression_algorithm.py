@@ -24,10 +24,13 @@ class LinearRegression(AlgorithmBase):
 
     def run(self, **kwargs):
         self._logger.info('LinearRegression train start...')
+        print(self._config.get("local", True))
         self._local = self._config.get("local", True)
+        print(self._local)
+        print(type(self._local))
         train_data = kwargs.get("train_data", [])
         X, y = self.get_data(train_data)
-        if self._local:
+        if not self._local:
             self._down_stream_data = {'x': X, 'y': y}
             self._logger.info('LinearRegression skip train...')
             return
@@ -78,7 +81,7 @@ class LinearRegression(AlgorithmBase):
             'subject'   : sensor
         })
 
-        if self._local:
+        if not self._local:
             X = self._down_stream_data.get('x')
             y = self._down_stream_data.get('y')
 
