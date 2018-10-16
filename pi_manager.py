@@ -78,6 +78,7 @@ if __name__ == '__main__':
 
     try:
         down_stream = my_config.get("downStream")
+        print("down_stream:" + down_stream)
         if down_stream is None:
             raise RuntimeError()
         down_addr = global_config.get(down_stream).get("btAddress")

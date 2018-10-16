@@ -44,6 +44,7 @@ class Table:
         """
         self.logger = logging.getLogger()
         self.nameOfTable = nameOfTable
+        print(nameOfTable)
         # If the table doesn't exist, create one.
         if (not self.tableExists(nameOfTable)):
             self.table = self.createTable(nameOfTable, hashKey, rangeKey, readCapUnits, writeCapUnits)

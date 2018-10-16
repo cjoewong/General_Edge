@@ -1,5 +1,6 @@
 from .algorithm_base import AlgorithmBase
-
+from utils.dynamo_utils import Table
+from decimal import Decimal
 import numpy as np
 import time
 import logging
@@ -18,7 +19,7 @@ class LinearRegression(AlgorithmBase):
         self._epochs = 50
         self._local = None
         self._down_stream_data = None
-        slef._logger = logging.getLogger('')
+        self._logger = logging.getLogger('')
         self._logger.info('LinearRegression Init finished...')
 
     def run(self, **kwargs):
@@ -49,12 +50,6 @@ class LinearRegression(AlgorithmBase):
     def cleanup(self):
         pass
 
-    def init_w(self, dim0, dim1):
-
-
-    def init_b(self, dim0):
-        return np.zeros((dim0, 1))
-
     def gradient_descent(self, X, y):
         w = np.zeros(X.shape[1], 1)
         b = 0
@@ -68,12 +63,12 @@ class LinearRegression(AlgorithmBase):
             b -= self._lr * db
         return w, b
 
-     def send(self, down_addr):
+    def send(self, down_addr):
         self._logger.info('LinearRegression send start...')
         if self._local is None:
             raise RuntimeError('Please train model first')
 
-        table = Table(down_addr)
+        table = Table(self._config.get('downStream'))
         room = self._config.get('room')
         sensor = self._config.get('sensor')
 
