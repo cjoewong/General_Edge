@@ -1,6 +1,8 @@
+from .algorithm_base import AlgorithmBase
+
 import numpy as np
 import time
-from .algorithm_base import AlgorithmBase
+import logging
 
 
 class LinearRegression(AlgorithmBase):
@@ -11,63 +13,105 @@ class LinearRegression(AlgorithmBase):
     def init(self, name, config):
         self._name = name
         self._config = config
-        self.lr = 0.01
-        self.lambd = 0.1
-        self.epochs = 50
-        self.w = None
-        self.b = None
+        self._lr = 0.01
+        self._lambd = 0.1
+        self._epochs = 50
+        self._local = None
+        self._down_stream_data = None
+        slef._logger = logging.getLogger('')
+        self._logger.info('LinearRegression Init finished...')
 
     def run(self, **kwargs):
-        local = kwargs.get("local", True)
+        self._logger.info('LinearRegression train start...')
+        self._local = kwargs.get("local", True)
         train_data = kwargs.get("train_data", [])
+        X, y = self.get_data(train_data)
+        if self._local:
+            self._down_stream_data = {'x': X, 'y': y}
+            self._logger.info('LinearRegression skip train...')
+            return
+
+        X = np.array(X)
+        y = np.array(y)
+        w, b = self.gradient_descent(X, y)
+        self._down_stream_data = {'w': w, 'b': b}
+        self._logger.info('LinearRegression train end...')
+
+    def get_data(self, train_data):
         X = []
         y = []
         for data in train_data:
             for row in data.get("data"):
                 X.append(list(map(lambda x : float(x), row[:-1])))
                 y.append(float(row[-1]))
-
-        X = np.array(X)
-        y = np.array(y)
-
-        if local:
-            return self.gradient_descent(X, y)
-        else:
-            return self.transmit(X, y)
+        return X, y
 
     def cleanup(self):
-        self.w = None
-        self.b = None
-
-    def gradient_descent(self, X, y):
-        if self.w == None:
-            self.w = self.init_w(X.shape[1], 1)
-        if self.b == None:
-            self.b = 0
-
-        for epoch in range(self.epochs):
-            pred = X.dot(self.w) + self.b
-            dloss = pred - y[:,None]
-            dw = np.dot(X.T,dloss)/X.shape[0]
-            db = np.sum(dloss)/X.shape[0]
-            self.w -= self.lr * dw
-            self.b -= self.lr * db
-
-        return self.w,self.b
-
-
-    def transmit(self, X, y):
         pass
 
     def init_w(self, dim0, dim1):
-        return np.zeros((dim0, dim1))
+
 
     def init_b(self, dim0):
         return np.zeros((dim0, 1))
 
-    def send(self, down_addr):
-        print("TO BE IMPLEMENTED")
-        time.sleep(3)
-        print("TO BE IMPLEMENTED")
-        time.sleep(3)
-        print("TO BE IMPLEMENTED")
+    def gradient_descent(self, X, y):
+        w = np.zeros(X.shape[1], 1)
+        b = 0
+
+        for epoch in range(self._epochs):
+            pred = X.dot(w) + b
+            dloss = pred - y[:, None]
+            dw = np.dot(X.T, dloss)/X.shape[0]
+            db = np.sum(dloss)/X.shape[0]
+            w -= self._lr * dw
+            b -= self._lr * db
+        return w, b
+
+     def send(self, down_addr):
+        self._logger.info('LinearRegression send start...')
+        if self._local is None:
+            raise RuntimeError('Please train model first')
+
+        table = Table(down_addr)
+        room = self._config.get('room')
+        sensor = self._config.get('sensor')
+
+        # Prepare the upload payload
+        item = table.getItem({
+            'forum'     : room,
+            'subject'   : sensor
+        })
+
+        if self._local:
+            X = self._down_stream_data.get('x')
+            y = self._down_stream_data.get('y')
+
+            # Numpy indexes follow the [row][column] convention
+            # ndarray.shape returns the dimensions as a (#OfRows, #OfColumns)
+            # Both of our matrices have the same number of rows, hence one measure is enough
+            numOfRows = len(X)
+            aggregatedItems = []
+
+            for i in range(numOfRows):
+                currentItem = {}
+                currentItem['X_1']     = Decimal(str('0'))    # Time
+                currentItem['X_2']     = Decimal(str(X[i][0]))    # Pressure
+                currentItem['X_3']     = Decimal(str(X[i][1]))    # Humidity
+                currentItem['Y']       = Decimal(str(y[i]))    # Temperature
+            aggregatedItems.append(currentItem)
+            item['aggregated_data'] = aggregatedItems
+        else:
+            w = self._down_stream_data.get('w')
+            b = self._down_stream_data.get('b')
+            item['feature_A'] = Decimal(str(float(w[0])))
+            item['feature_B'] = Decimal(str(float(w[1])))
+            item['feature_C'] = Decimal(str(float(w[2])))
+
+        table.addItem(item)
+
+        item.pop('aggregated_data', None)
+        item.pop('forum', None)
+        item.pop('subject', None)
+
+        self._logger.info('Data sent to Dynamo...')
