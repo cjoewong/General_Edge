@@ -24,7 +24,7 @@ class LinearRegression(AlgorithmBase):
 
     def run(self, **kwargs):
         self._logger.info('LinearRegression train start...')
-        self._local = kwargs.get("local", True)
+        self._local = self._config.get("local", True)
         train_data = kwargs.get("train_data", [])
         X, y = self.get_data(train_data)
         if self._local:
