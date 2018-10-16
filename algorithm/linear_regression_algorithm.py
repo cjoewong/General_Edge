@@ -93,9 +93,9 @@ class LinearRegression(AlgorithmBase):
 
             for i in range(numOfRows):
                 currentItem = {}
-                currentItem['X_1']     = Decimal(str('0'))    # Time
-                currentItem['X_2']     = Decimal(str(X[i][0]))    # Pressure
-                currentItem['X_3']     = Decimal(str(X[i][1]))    # Humidity
+                currentItem['X_1']     = Decimal(str(x[i][0]))    # Time
+                currentItem['X_2']     = Decimal(str(X[i][1]))    # Pressure
+                currentItem['X_3']     = Decimal(str(X[i][2]))    # Humidity
                 currentItem['Y']       = Decimal(str(y[i]))    # Temperature
                 aggregatedItems.append(currentItem)
             item['aggregated_data'] = aggregatedItems
