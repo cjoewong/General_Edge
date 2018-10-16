@@ -22,7 +22,7 @@ sensorPiB:
   className: LinearRegressionDataCollector
   btAddress: B8:27:EB:D3:D7:AF
   dataFilePaths:
-    - data_B
+    - data/data_B
   downStream: gatewayPiB
 
 gatewayPiB:
