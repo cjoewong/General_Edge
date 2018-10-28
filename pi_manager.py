@@ -52,9 +52,13 @@ if __name__ == '__main__':
 
     # schedule
     train_data = []
-    while not dependency_handler.dependency_resolved(args.pi_name):
+    total_bt_time = 0
+    total_data_size = 0
+    while not dependency_handler.dependency_resolveddata(args.pi_name):
         logger.info("Waiting for Pi-{0}'s dependencies...".format(args.pi_name))
         bt_time, recv_data = BT.listenOnBluetooth(1)
+        total_bt_time += bt_time
+        total_data_size += recv_data.nbytes
         train_data.append(recv_data)
         from_pi = recv_data.get('from_pi')
         dependency_handler.add_resolved_dependency(from_pi, args.pi_name)
@@ -92,7 +96,7 @@ if __name__ == '__main__':
     worker = clz()
     worker.init(args.pi_name, my_config)
     worker.run(train_data=train_data)
-    worker.send(down_addr)
+    worker.send(down_addr, total_bt_time, total_data_size)
     worker.cleanup()
     t2 = time.time()
 

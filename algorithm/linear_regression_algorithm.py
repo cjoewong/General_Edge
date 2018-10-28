@@ -21,13 +21,13 @@ class LinearRegression(AlgorithmBase):
         self._down_stream_data = None
         self._logger = logging.getLogger('')
         self._logger.info('LinearRegression Init finished...')
+        self.process_time = 0
 
     def run(self, **kwargs):
         self._logger.info('LinearRegression train start...')
+        start_time = time.time()
         print(self._config.get("local", True))
         self._local = self._config.get("local", True)
-        print(self._local)
-        print(type(self._local))
         train_data = kwargs.get("train_data", [])
         X, y = self.get_data(train_data)
         if not self._local:
@@ -39,6 +39,8 @@ class LinearRegression(AlgorithmBase):
         y = np.array(y)
         w, b = self.gradient_descent(X, y)
         self._down_stream_data = {'w': w, 'b': b}
+        end_time = time.time()
+        self.process_time = end_time - start_time
         self._logger.info('LinearRegression train end...')
 
     def get_data(self, train_data):
@@ -112,11 +114,12 @@ class LinearRegression(AlgorithmBase):
         return np.around(w, decimals=4), np.around(b, decimals=4)
         """
 
-    def send(self, down_addr):
+    def send(self, down_addr, bt_time, origin_data_size):
         self._logger.info('LinearRegression send start...')
         if self._local is None:
             raise RuntimeError('Please train model first')
 
+        start_time = time.time()
         table = Table(self._config.get('downStream'))
         room = self._config.get('room')
         sensor = self._config.get('sensor')
@@ -145,15 +148,25 @@ class LinearRegression(AlgorithmBase):
                 currentItem['Y']       = Decimal(str(y[i]))    # Temperature
                 aggregatedItems.append(currentItem)
             item['aggregated_data'] = aggregatedItems
+            processed_data_size = X.nbytes + y.nbytes
         else:
             w = self._down_stream_data.get('w')
             b = self._down_stream_data.get('b')
             item['feature_A'] = Decimal(str(float(w[0])))
             item['feature_B'] = Decimal(str(float(w[1])))
             item['feature_C'] = Decimal(str(float(w[2])))
+            processed_data_size = w.nbytes
 
+        item['origin_data_size'] = Decimal(str(origin_data_size))
+        item['bt_time'] = Decimal(str(bt_time))
+        item['processed_data_size'] = Decimal(str(processed_data_size))
         table.addItem(item)
+        end_time = time.time()
 
+        upload_time = end_time - start_time
+        item['upload_time'] = Decimal(str(upload_time))
+        item['timestamp'] = Decimal(str(end_time))
+        table.addItem(item)
         item.pop('aggregated_data', None)
         item.pop('forum', None)
         item.pop('subject', None)
