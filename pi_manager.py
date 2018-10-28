@@ -96,7 +96,7 @@ if __name__ == '__main__':
     worker = clz()
     worker.init(args.pi_name, my_config)
     worker.run(train_data=train_data)
-    worker.send(down_addr, total_bt_time, total_data_size)
+    worker.send(down_addr=down_addr, bt_time=total_bt_time, origin_data_size=total_data_size)
     worker.cleanup()
     t2 = time.time()
 
