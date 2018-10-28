@@ -159,7 +159,6 @@ class LinearRegression(AlgorithmBase):
             item['feature_C'] = Decimal(str(float(w[2])))
             processed_data_size = w.nbytes
 
-        item['origin_data_size'] = Decimal(str(origin_data_size))
         item['bt_time'] = Decimal(str(bt_time))
         item['processed_data_size'] = Decimal(str(processed_data_size))
         table.addItem(item)
