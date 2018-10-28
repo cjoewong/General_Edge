@@ -114,7 +114,10 @@ class LinearRegression(AlgorithmBase):
         return np.around(w, decimals=4), np.around(b, decimals=4)
         """
 
-    def send(self, down_addr, bt_time, origin_data_size):
+    def send(self, **kwargs):
+#       down_addr = kwargs.get('down_addr')
+        bt_time = kwargs.get('bt_time')
+        origin_data_size = kwargs.get('origin_data_size')
         self._logger.info('LinearRegression send start...')
         if self._local is None:
             raise RuntimeError('Please train model first')

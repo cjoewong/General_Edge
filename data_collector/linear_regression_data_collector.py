@@ -23,9 +23,10 @@ class LinearRegressionDataCollector(DataCollectorBase):
     def cleanup(self):
         pass
 
-    def send(self, down_addr):
+    def send(self, **kwargs):
         """Send data to the downStream Pi
         """
+        down_addr = kwargs.get('down_addr')
         bluetootch_utils.sendData(self._data, down_addr, 1)
 
     def run(self, **kwargs):
