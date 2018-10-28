@@ -2,16 +2,16 @@ sensorPiA:
   role: DataCollector
   classPath: data_collector
   className: LinearRegressionDataCollector
-  btAddress: B8:27:EB:0E:3A:E6
+  btAddress: B8:27:EB:F3:2D:09
   dataFilePaths:
-    - data/data_A
+    - data/sensingdata_A_cloud_compute.csv
   downStream: gatewayPiA
 
 gatewayPiA:
   role: Algorithm
   classPath: algorithm
   className: LinearRegression
-  btAddress: B8:27:EB:49:FE:C6
+  btAddress: B8:27:EB:0E:3A:E6
   downStream: sensingdata_A
   room: roomA
   sensor: sensorA
@@ -20,16 +20,16 @@ sensorPiB:
   role: DataCollector
   classPath: data_collector
   className: LinearRegressionDataCollector
-  btAddress: B8:27:EB:0E:3A:E6
+  btAddress: B8:27:EB:49:FE:C6
   dataFilePaths:
-    - data/data_B
+    - data/sensingdata_B_cloud_compute.csv
   downStream: gatewayPiB
 
 gatewayPiB:
   role: Algorithm
   classPath: algorithm
   className: LinearRegression
-  btAddress: B8:27:EB:49:FE:C6
+  btAddress: B8:27:EB:D3:D7:AF
   downStream: sensingdata_B
   room: roomB
   sensor: sensorB
@@ -38,9 +38,9 @@ sensorPiC:
   role: DataCollector
   classPath: data_collector
   className: LinearRegressionDataCollector
-  btAddress: B8:27:EB:D3:D7:AF
+  btAddress: B8:27:EB:A9:3E:19
   dataFilePaths:
-    - data/data_C
+    - data/sensingdata_C_cloud_compute.csv
   downStream: gatewayPiC
 
 gatewayPiC:
@@ -48,7 +48,7 @@ gatewayPiC:
   classPath: algorithm
   local: false
   className: LinearRegression
-  btAddress: B8:27:EB:A9:3E:19
+  btAddress: B8:27:EB:48:74:A4
   downStream: sensingdata_C
   room: roomC
   sensor: sensorC
