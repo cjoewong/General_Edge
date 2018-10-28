@@ -54,7 +54,7 @@ if __name__ == '__main__':
     train_data = []
     total_bt_time = 0
     total_data_size = 0
-    while not dependency_handler.dependency_resolveddata(args.pi_name):
+    while not dependency_handler.dependency_resolved(args.pi_name):
         logger.info("Waiting for Pi-{0}'s dependencies...".format(args.pi_name))
         bt_time, recv_data = BT.listenOnBluetooth(1)
         total_bt_time += bt_time
