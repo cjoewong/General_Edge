@@ -17,5 +17,5 @@ class AlgorithmBase:
     def run(self, **kwargs):
         raise RuntimeError("Need to be implemented!")
 
-    def send(self, down_addr):
+    def send(self, down_addr, bt_time, origin_data_size):
         raise RuntimeError("Need to be implemented!")
