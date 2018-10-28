@@ -117,7 +117,6 @@ class LinearRegression(AlgorithmBase):
     def send(self, **kwargs):
 #       down_addr = kwargs.get('down_addr')
         bt_time = kwargs.get('bt_time')
-        origin_data_size = kwargs.get('origin_data_size')
         self._logger.info('LinearRegression send start...')
         if self._local is None:
             raise RuntimeError('Please train model first')
