@@ -161,6 +161,7 @@ class LinearRegression(AlgorithmBase):
 
         item['bt_time'] = Decimal(str(bt_time))
         item['processed_data_size'] = Decimal(str(processed_data_size))
+        item['calculation_time'] = Decimal(str(self.process_time))
         table.addItem(item)
         end_time = time.time()
 
