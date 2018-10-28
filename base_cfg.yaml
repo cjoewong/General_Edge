@@ -4,7 +4,7 @@ sensorPiA:
   className: LinearRegressionDataCollector
   btAddress: B8:27:EB:F3:2D:09
   dataFilePaths:
-    - data/sensingdata_A_cloud_compute.csv
+    - data/dataA
   downStream: gatewayPiA
 
 gatewayPiA:
@@ -22,7 +22,7 @@ sensorPiB:
   className: LinearRegressionDataCollector
   btAddress: B8:27:EB:49:FE:C6
   dataFilePaths:
-    - data/sensingdata_B_cloud_compute.csv
+    - data/dataB
   downStream: gatewayPiB
 
 gatewayPiB:
@@ -40,7 +40,7 @@ sensorPiC:
   className: LinearRegressionDataCollector
   btAddress: B8:27:EB:A9:3E:19
   dataFilePaths:
-    - data/sensingdata_C_cloud_compute.csv
+    - data/dataC
   downStream: gatewayPiC
 
 gatewayPiC:
