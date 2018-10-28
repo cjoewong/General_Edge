@@ -82,8 +82,8 @@ def sendData(data, target_address, channel):
 
             sock.close()
             break
-        except Exception:
-            print('Dest is not available, try in 5s...')
+        except Exception as e:
+            print('Dest is not available, try in 5s... {0}'.format(str(e)))
             time.sleep(5)    
 
     end_time = time.time()
