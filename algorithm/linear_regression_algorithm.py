@@ -96,7 +96,7 @@ class LinearRegression(AlgorithmBase):
             #if np.isclose(E_new, E_old)[0]:
             #print("Escaped loop after", str(count), "iterations.")
             #break
-        print(w_new)
+        #print(w_new)
         return w_new, 0
         """
         w = np.zeros((X.shape[1], 1))
