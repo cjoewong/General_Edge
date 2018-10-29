@@ -14,7 +14,9 @@ def init_logger(config_path, verbosity):
     """
     Init the global logger
 
-    @param: verbosity The logger level
+    Param(s):
+        config_path  The logger configuration file path
+        verbosity    The logger level
     """
     logging.config.fileConfig(config_path)
     logger = logging.getLogger()
@@ -24,6 +26,8 @@ def init_logger(config_path, verbosity):
 
 if __name__ == '__main__':
     print('Start...')
+
+    # Setup the command line argument
     parser = argparse.ArgumentParser()
     parser.add_argument("cfg_file_path",
                         help="The path of configuration file")
@@ -40,17 +44,19 @@ if __name__ == '__main__':
     init_logger(args.logconfig, args.verbosity)
 
     logger = logging.getLogger()
-    logger.info("Start....")
+    logger.info("Start parsing the configuration_file....")
+
     # Read the configuration file
     logger.info("Parsing configuration file...")
     global_config = {}
     with open(args.cfg_file_path) as f:
         global_config = yaml.load(f)
 
-    # Resolve pis' dependencies
+    # Resolve Pi's dependencies
     dependency_handler = DependencyHandler(global_config)
 
-    # schedule
+    # Schedule Pi's and the Pi will only be scheduled when all its dependencies
+    # are resolved
     train_data = []
     total_bt_time = 0
     while not dependency_handler.dependency_resolved(args.pi_name):
@@ -61,7 +67,7 @@ if __name__ == '__main__':
         from_pi = recv_data.get('from_pi')
         dependency_handler.add_resolved_dependency(from_pi, args.pi_name)
 
-    # run it's main function
+    # Run it's main function
     my_config = global_config.get(args.pi_name)
     role = my_config.get("role")
     if role == "DataCollector":
@@ -70,12 +76,11 @@ if __name__ == '__main__':
         pass
     else:
         raise RuntimeError("Error role of pi-{0}".format(args.pi_name))
+
     # Use reflection to dynamically new instance
     class_path = my_config.get("classPath")
     class_name = my_config.get("className")
-
     m = importlib.import_module(class_path)
-
     clz = getattr(m, class_name)
 
     try:

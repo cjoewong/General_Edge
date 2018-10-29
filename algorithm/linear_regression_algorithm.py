@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from .algorithm_base import AlgorithmBase
 from utils.dynamo_utils import Table
 from decimal import Decimal
@@ -12,6 +14,14 @@ class LinearRegression(AlgorithmBase):
         pass
 
     def init(self, name, config):
+        """
+        Init the required arguments we will use in the trainning stage.
+
+        Param(s):
+            name    The name of current Pi
+            config  The yaml configuration object passed from pi_manager
+
+        """
         self._name = name
         self._config = config
         self._lr = 0.0001
@@ -24,6 +34,10 @@ class LinearRegression(AlgorithmBase):
         self.process_time = 0
 
     def run(self, **kwargs):
+        """
+        Start to train LinearRegression Model
+
+        """
         self._logger.info('LinearRegression train start...')
         start_time = time.time()
         print(self._config.get("local", True))
@@ -44,6 +58,12 @@ class LinearRegression(AlgorithmBase):
         self._logger.info('LinearRegression train end...')
 
     def get_data(self, train_data):
+        """
+        Parse the tarinning data from the DataCollector
+
+        Param(s):
+            train_data The data transfered from DataCollector
+        """
         X = []
         y = []
         for data in train_data:
@@ -53,69 +73,61 @@ class LinearRegression(AlgorithmBase):
         return X, y
 
     def cleanup(self):
+        """
+        Clean up
+        """
         pass
 
-    def gradient_descent(self, designMatrix, targetMatrix):
-        targetMatrix = targetMatrix[:,None]
+    def gradient_descent(self, design_matrix, target_matrix):
+        """
+        Gradient descent main function
+
+        Param(s):
+            design_matrix   The initial data matrix
+            target_matrix   The true data matrix
+        """
+        target_matrix = target_matrix[:, None]
         count = 0
         w_old = np.zeros((3, 1))
         w_new = np.zeros((3, 1))
         E_old = 0
         E_new = 0
-        delta_E = np.zeros((len(designMatrix), 3))
+        delta_E = np.zeros((len(design_matrix), 3))
         learning_rate = 0.001
+
         # tolerance = 1e-5
         while True:
             w_old = w_new
 
-            for i in range(len(designMatrix)):
-                delta_E[i,:] = delta_E[i,:] + (targetMatrix[i] - np.dot(np.matrix(designMatrix[i,:]), np.matrix(w_old))) * designMatrix[i,:]
+            for i in range(len(design_matrix)):
+                delta_E[i, :] = delta_E[i,:] + (target_matrix[i] - np.dot(np.matrix(design_matrix[i, :]), np.matrix(w_old))) * design_matrix[i,:]
 
 
-            w_new = w_old + learning_rate * np.matrix(delta_E[i, :] / (len(designMatrix))).T
+            w_new = w_old + learning_rate * np.matrix(delta_E[i, :] / (len(design_matrix))).T
             E_old = E_new
 
-            for i in range(len(designMatrix)):
-                E_new = E_new + (targetMatrix[i]- np.dot(np.matrix(designMatrix[i, :]), np.matrix(w_new))) ** 2
+            for i in range(len(design_matrix)):
+                E_new = E_new + (target_matrix[i]- np.dot(np.matrix(design_matrix[i, :]), np.matrix(w_new))) ** 2
                 E_new = E_new / 2
 
             if E_new > E_old:
                 learning_rate = learning_rate / 2
 
             count = count + 1
-            # print("E_new", E_new, "E_old", E_old)
             if count % 20 == 0:
-            # print(" ".join[count, "iterations so far..."])
                 print(str(count), " iterations so far...")
 
             # Test if restricting iterations affects the quality
             if count == 50:
                 break
 
-            # Comparing E_new == E_old is tricky because of precision.
-            #if np.isclose(E_new, E_old)[0]:
-            #print("Escaped loop after", str(count), "iterations.")
-            #break
-        #print(w_new)
         return w_new, 0
-        """
-        w = np.zeros((X.shape[1], 1))
-        b = 0
-
-        for epoch in range(self._epochs):
-            pred = X.dot(w) + b
-            print(pred)
-            dloss = pred - y[:, None]
-            dw = np.dot(X.T, dloss)/X.shape[0]
-            db = np.sum(dloss)/X.shape[0]
-            w -= self._lr * dw
-            b -= self._lr * db
-            print(w)
-        return np.around(w, decimals=4), np.around(b, decimals=4)
-        """
 
     def send(self, **kwargs):
-#       down_addr = kwargs.get('down_addr')
+        """
+        Send the model to the downstream and here it is Dynamo
+        """
+
         bt_time = kwargs.get('bt_time')
         self._logger.info('LinearRegression send start...')
         if self._local is None:
@@ -136,21 +148,17 @@ class LinearRegression(AlgorithmBase):
             X = self._down_stream_data.get('x')
             y = self._down_stream_data.get('y')
 
-            # Numpy indexes follow the [row][column] convention
-            # ndarray.shape returns the dimensions as a (#OfRows, #OfColumns)
-            # Both of our matrices have the same number of rows, hence one measure is enough
-            numOfRows = len(X)
-            aggregatedItems = []
+            num_of_rows = len(X)
+            aggregated_items = []
 
-            for i in range(numOfRows):
+            for i in range(num_of_rows):
                 currentItem = {}
-                currentItem['X_1']     = Decimal(str(X[i][0]))    # Time
-                currentItem['X_2']     = Decimal(str(X[i][1]))    # Pressure
-                currentItem['X_3']     = Decimal(str(X[i][2]))    # Humidity
-                currentItem['Y']       = Decimal(str(y[i]))    # Temperature
-                aggregatedItems.append(currentItem)
-            item['aggregated_data'] = aggregatedItems
-            #processed_data_size = X.nbytes + y.nbytes
+                currentItem['X_1'] = Decimal(str(X[i][0]))    # Time
+                currentItem['X_2'] = Decimal(str(X[i][1]))    # Pressure
+                currentItem['X_3'] = Decimal(str(X[i][2]))    # Humidity
+                currentItem['Y'] = Decimal(str(y[i]))         # Temperature
+                aggregated_items.append(currentItem)
+            item['aggregated_data'] = aggregated_items
             processed_data_size = -1
         else:
             w = self._down_stream_data.get('w')

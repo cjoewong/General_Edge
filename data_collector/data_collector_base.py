@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+
 class DataCollectorBase():
     """
-
+    Data collector interface
     """
 
     def __init__(self, config):

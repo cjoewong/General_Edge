@@ -3,6 +3,7 @@
 from .data_collector_base import DataCollectorBase
 from utils import bluetootch_utils
 
+
 class LinearRegressionDataCollector(DataCollectorBase):
     """Linear Regression Data Collector
 
@@ -11,25 +12,36 @@ class LinearRegressionDataCollector(DataCollectorBase):
 
     """
 
-    def __init__(self):
-        pass
-
     def init(self, name, config):
+        """
+        Init the required arguments we will use in the data collector stage.
+
+        Param(s):
+            name    The name of current Pi
+            config  The yaml configuration object passed from pi_manager
+        """
         self._name = name
         self._config = config
         self._file_paths = config.get("dataFilePaths")
         self._data = None
 
     def cleanup(self):
+        """
+        Clean up
+        """
         pass
 
     def send(self, **kwargs):
-        """Send data to the downStream Pi
+        """
+        Send data to the downStream Gateway Pi
         """
         down_addr = kwargs.get('down_addr')
         bluetootch_utils.sendData(self._data, down_addr, 1)
 
     def run(self, **kwargs):
+        """
+        Collect data from given csv file
+        """
         raw_data = []
         for p in self._file_paths:
             with open(p, 'r') as f:

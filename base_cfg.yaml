@@ -1,3 +1,9 @@
+# This the the base configruation file
+# Here we have 3 pair pis
+# sensorPiA gatewayPiA - Local Computing Resources
+# sensorPiB gatewayPiB - Local Conputing Resources
+# sensorPiC gatewayPiC - Data Transfer station
+
 sensorPiA:
   role: DataCollector
   classPath: data_collector

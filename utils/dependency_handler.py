@@ -7,16 +7,22 @@ class DependencyHandler(object):
     """
     The handler is used to resolve the dependecies between sensor and gateway
     """
-
     def __init__(self, global_cfg):
+        """
+        Init function
+
+        Param(s):
+            global_cfg  The yaml configuration object
+        """
         self._global_cfg = global_cfg
         self._dependencies = {}
         self._logger = logging.getLogger()
-        # Start parser
+
         self._parse()
 
     def _parse(self):
-        """Analysis the global dependencies
+        """
+        Analyze the global dependencies
         """
         for name, info in self._global_cfg.items():
             down_stream = info.get("downStream")
@@ -28,6 +34,10 @@ class DependencyHandler(object):
     def add_resolved_dependency(self, piA, piB):
         """
         Add one resolved dependency, piA -> piB
+
+        Param(s):
+            piA   The frontend pi(e.g. sensorPi)
+            piB   The backend pi(e.g. gatewayPi)
         """
         try:
             prerequisites = self._dependencies.get(piB)
@@ -43,6 +53,10 @@ class DependencyHandler(object):
         """
         Return if this pi's dependencies are all resolved
 
-        @return true/false Indicate if the dependencies resolved or not
+        Param(s):
+            pi_name  The pi you want to check
+
+        Return
+            true/false Indicate if the dependencies resolved or not
         """
         return self._dependencies.get(pi_name) is None or len(self._dependencies.get(pi_name)) == 0

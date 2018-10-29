@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+
 class AlgorithmBase:
     """
     Interface for the algorithm part

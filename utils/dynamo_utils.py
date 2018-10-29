@@ -1,10 +1,4 @@
-"""
-Centralized location for handling all requests to Amazon's DynamoDB
-
-@ Original Author   : Chege Gitau
-
-"""
-#______________________________________________________________________________
+#!/usr/bin/env python3
 
 import boto3
 import os
@@ -12,9 +6,9 @@ from botocore.exceptions import ClientError
 import logging
 dynamodb = boto3.resource(
     'dynamodb',
-    aws_access_key_id = os.environ['aws_access_key_id'],
-    aws_secret_access_key = os.environ['aws_secret_access_key'],
-    region_name = 'us-east-1'
+    aws_access_key_id=os.environ['aws_access_key_id'],
+    aws_secret_access_key=os.environ['aws_secret_access_key'],
+    region_name='us-east-1'
 )
 client = boto3.client(
     "dynamodb",
@@ -23,13 +17,11 @@ client = boto3.client(
     region_name='us-east-1'
 )
 
-#_______________________________________________________________________________
-
-
 
 class Table:
 
-    def __init__(self, nameOfTable, hashKey = None, rangeKey = None, readCapUnits = 2, writeCapUnits = 2):
+    def __init__(self, nameOfTable, hashKey=None, rangeKey=None,
+                 readCapUnits=2, writeCapUnits=2):
         """
         Initializes an instance of this class bearing a reference to a table.
 
@@ -218,4 +210,3 @@ class Table:
         print("---------------------------")
         print("Pro-Tip :", tip)
         print("---------------------------")
-#_______________________________________________________________________________

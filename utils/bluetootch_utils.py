@@ -1,15 +1,23 @@
+#!/usr/bin/env python3
+
 import bluetooth
 import time
 import pickle
 import logging
 
+
 def listenOnBluetooth(channel):
-    '''
+    """
     Listen to incoming data on Bluetooth Interface
-    '''
+
+    Param(s):
+        channel The Bluetooth channel to listen to
+    """
     logger = logging.getLogger()
-    allowableUnacceptedConns = 1 # The # of unaccepted connection before refusing new connections
-    bufferSize = 1 # Receive up to this number of buffersize bytes from the socket
+    # The # of unaccepted connection before refusing new connections
+    allowableUnacceptedConns = 1
+    # Receive up to this number of buffersize bytes from the socket
+    bufferSize = 1
 
     # Setup the Bluetooth connection
     server_sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
@@ -35,15 +43,11 @@ def listenOnBluetooth(channel):
             # Append the received data to the helper variable
             total_data.append(data_1)
 
-        # Should we stop timing at this point?
-        # endTime = time.time()
-
     except IOError:
         pass    # Sincere apologies to all who told me passing is poor practice
 
     except KeyboardInterrupt:
         bluetooth.stop_advertising(server_sock)
-        # sys.exit()    Why do we need an exit before we're actually done?
 
     except Exception:
         print('No data is received, waiting...')
@@ -63,15 +67,20 @@ def listenOnBluetooth(channel):
 
 
 def sendData(data, target_address, channel):
-    '''
+    """
     Send data over Bluetooth.
-    '''
+
+    Param(s):
+        data               The data will be transfered to
+        target_address     The target BT address
+        channel            The target channel
+    """
     logger = logging.getLogger()
     start_time = time.time()
 
     # Establish BT connection
     while True:
-        try: 
+        try:
             sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
             sock.connect((target_address, channel))
 
@@ -84,8 +93,9 @@ def sendData(data, target_address, channel):
             break
         except Exception as e:
             print('Dest is not available, try in 5s... {0}'.format(str(e)))
-            time.sleep(5)    
+            time.sleep(5)
 
     end_time = time.time()
     bt_time = end_time - start_time
-    logger.info("Sensor : Sent %f/%f bytes over Bluetooth in %f seconds", bytes_sent, data_size, bt_time)
+    logger.info("Sensor : Sent %f/%f bytes over Bluetooth in %f seconds",
+                bytes_sent, data_size, bt_time)
