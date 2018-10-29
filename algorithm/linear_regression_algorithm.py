@@ -150,7 +150,8 @@ class LinearRegression(AlgorithmBase):
                 currentItem['Y']       = Decimal(str(y[i]))    # Temperature
                 aggregatedItems.append(currentItem)
             item['aggregated_data'] = aggregatedItems
-            processed_data_size = X.nbytes + y.nbytes
+            #processed_data_size = X.nbytes + y.nbytes
+            processed_data_size = -1
         else:
             w = self._down_stream_data.get('w')
             b = self._down_stream_data.get('b')
