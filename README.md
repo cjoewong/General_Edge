@@ -19,16 +19,25 @@ This is a general framework for Edge Computing on Raspberry Pis. All modules are
 The <b>pi_manager.py</b> is the manager of the whole project, it will read the config file, learn the rules about this experiment, then use corresponding strategy to do data collection or run the algorithm.
 #### Config
 The config file contains the rules of the whole experiment, the general structure looks like:
-```
-sensorPiA //name of the pi, you should specify this when you run the program.
-    role:Algorithm/DataCollector //What should this Pi do.
-    classPath: algorithm/data_collector //Path of the corresponding class you want to use.
-    className: LinearRegression //The corresponding class.
-    btAddress: XX:XX:XX:XX:XX:XX //Bluetooth address of this Pi.
-    downStream: //The next handler.
-    room: roomA //room in DynamoDB(optional)
-    sensor: sensorA //sensor in DynamoDB(optional)
-    dataFilePaths: //Path to your data(optional for data collector)
+```yaml
+# name of the pi, you should specify this when you run the program.
+sensorPiA
+    # What should this Pi do.
+    role:Algorithm/DataCollector
+    # Path of the corresponding class you want to use.
+    classPath: algorithm/data_collector
+    # The corresponding class.
+    className: LinearRegression
+    # Bluetooth address of this Pi.
+    btAddress: XX:XX:XX:XX:XX:XX
+    # The next handler inside the yaml file
+    downStream:
+    # room in DynamoDB(optional)
+    room: roomA
+    # sensor in DynamoDB(optional)
+    sensor: sensorA
+    # Path to your data(optional for data collector)
+    dataFilePaths:
         - data/dataA
 ```
 #### Data collector
@@ -74,6 +83,7 @@ $ sudo python3 -m pip install pybluez
 
 $ sudo /etc/init.d/bluetooth restart
 $ sudo bluetoothctl
+// Inside the bluetoothctl
     $ scan on
     $ power on
     $ agent on
