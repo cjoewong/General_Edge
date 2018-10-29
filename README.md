@@ -1,5 +1,5 @@
 # General Edge
-This is a general framework for Edge Computing on Raspberry Pis. All modules are written in Python3.
+This is a general framework for Edge Computing on Raspberry Pis. All modules are written in Python3. 
 
 ### Table of Contents
 - [Outline](#outline)
@@ -19,7 +19,7 @@ This is a general framework for Edge Computing on Raspberry Pis. All modules are
 The <b>pi_manager.py</b> is the manager of the whole project, it will read the config file, learn the rules about this experiment, then use corresponding strategy to do data collection or run the algorithm.
 #### Config
 The config file contains the rules of the whole experiment, the general structure looks like:
-```yaml
+```
 sensorPiA //name of the pi, you should specify this when you run the program.
     role:Algorithm/DataCollector //What should this Pi do.
     classPath: algorithm/data_collector //Path of the corresponding class you want to use.
@@ -33,7 +33,7 @@ sensorPiA //name of the pi, you should specify this when you run the program.
 ```
 #### Data collector
 The data collector will work like the sensor, it collects data and send it to its downstream. 
-```py
+```
 def init() //Initialize this data collector, pass in necessary parameters.
 def cleanup() //Clean this data collector.
 def send() //Send data to the downstream.
@@ -42,7 +42,7 @@ def run() //Get data.
 
 #### Algorithm
 The algorithm module should contains all the logic you want your gateway to do. Generally, you should implement different ways to handle local computing and transfer data to downstream directly.
-```py
+```
 def init() //Initialize this algorithm part, pass in necessary parameters.
 def run() //Run the algorithm module.
 def cleanup() //Clean this algorithm module.
@@ -59,6 +59,7 @@ If you want Raspberry Pis to connect Wifi and use SSH to login the Pis, you shou
 export aws_access_key_id="XXXXXX"
 export aws_secret_access_key="XXXXX"
 ```
+
 #### Install
 On every Raspberry Pi, clone this repository.
 ```sh
@@ -87,6 +88,8 @@ sudo pip3 install -r requirement.txt
 #### Run
 You should run based on your config file. 
 ```sh
+$ python3 pi_manager.py [config file] [pi name]
+
 $ python3 pi_manager.py base_cfg.yaml sensorPiA
 $ python3 pi_manager.py base_cfg.yaml gatewayPiA
 ```
