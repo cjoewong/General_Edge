@@ -108,17 +108,17 @@ class MNISTNetwork(AlgorithmBase):
                 activation1 = Tanh()
                 activation2 = Sigmoid()
                 # Initialize weight as uniform distribution.
-                h1 = activation1(data@W1.T)
+                h1 = activation1(np.dot(data, W1.T))
                 h1 = np.concatenate((h1, b2), axis=1)
-                z = activation2(h1@W2.T)
+                z = activation2(np.dot(h1, W2.T))
                 pred = np.argmax(z, axis=1)[:,None]
                 oh_label = one_hot(batch_label)
                 L = oh_label*np.log(z)+(1-oh_label)*np.log(1-z)
                 dL = -(oh_label/z - (1-oh_label)/(1-z))*activation2.derivative()
-                dy = dL@W2
+                dy = np.dot(dL, W2)
                 du = dy[:,:-1]*activation1.derivative()
-                dW1 = 1/batch_label.shape[0]*du.T@data
-                dW2 = 1/batch_label.shape[0]*dL.T@h1
+                dW1 = 1/batch_label.shape[0]*np.dot(du.T, data)
+                dW2 = 1/batch_label.shape[0]*np.dot(dL.T, h1)
                 W1 -= lr*dW1
                 W2 -= lr*dW2
         W = [W1, W2]
