@@ -23,7 +23,7 @@ sensorPiB:
   btAddress: B8:27:EB:F3:2D:09
   dataFilePaths:
     - data/mnist_B_small.npy
-  downStream: gatewayPiA
+  downStream: gatewayPiB
 
 gatewayPiB:
   role: Algorithm
