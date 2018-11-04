@@ -1,1 +1,2 @@
 from .linear_regression_data_collector import LinearRegressionDataCollector
+from .mnist_data_collector import MNISTDataCollector

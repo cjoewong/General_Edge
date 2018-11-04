@@ -1,1 +1,2 @@
 from .linear_regression_algorithm import LinearRegression
+from .mnist_neural_network import MNISTNetwork
