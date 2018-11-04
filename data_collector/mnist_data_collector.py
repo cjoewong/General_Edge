@@ -32,6 +32,6 @@ class MNISTDataCollector(DataCollectorBase):
 
     def run(self, **kwargs):
 #       raw_data = []
-        mnist = np.load(self._file_paths)
+        mnist = np.load(self._file_paths[0])
         print('Collect data: {0}'.format(len(mnist)))
         self._data = {"from_pi": self._name, "data": mnist}
