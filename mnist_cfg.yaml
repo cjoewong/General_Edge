@@ -1,0 +1,54 @@
+sensorPiA:
+  role: DataCollector
+  classPath: data_collector
+  className: MNISTDataCollector
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_A_small.npy
+  downStream: gatewayPiA
+
+gatewayPiA:
+  role: Algorithm
+  classPath: algorithm
+  className: MNISTNetwork
+  btAddress: B8:27:EB:0E:3A:E6
+  downStream: mnist_A
+  room: roomA
+  sensor: sensorA
+
+sensorPiB:
+  role: DataCollector
+  classPath: data_collector
+  className: MNISTDataCollector
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_B_small.npy
+  downStream: gatewayPiA
+
+gatewayPiA:
+  role: Algorithm
+  classPath: algorithm
+  className: MNISTNetwork
+  btAddress: B8:27:EB:0E:3A:E6
+  downStream: mnist_B
+  room: roomA
+  sensor: sensorA
+
+sensorPiC:
+  role: DataCollector
+  classPath: data_collector
+  className: MNISTDataCollector
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_C.npy
+  downStream: gatewayPiC
+
+gatewayPiC:
+  role: Algorithm
+  classPath: algorithm
+  local: false
+  className: MNISTNetwork
+  btAddress: B8:27:EB:0E:3A:E6
+  downStream: mnist_C
+  room: roomC
+  sensor: sensorC
