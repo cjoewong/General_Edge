@@ -53,11 +53,11 @@ class MNISTNetwork(AlgorithmBase):
         self._local = None
         self._down_stream_data = None
         self._logger = logging.getLogger('')
-        self._logger.info('LinearRegression Init finished...')
+        self._logger.info('MNIST network Init finished...')
         self.process_time = 0
 
     def run(self, **kwargs):
-        self._logger.info('LinearRegression train start...')
+        self._logger.info('MNIST network train start...')
         start_time = time.time()
         print(self._config.get("local", True))
         self._local = self._config.get("local", True)
@@ -65,14 +65,14 @@ class MNISTNetwork(AlgorithmBase):
         X, y = self.get_data(train_data)
         if not self._local:
             self._down_stream_data = {'x': X, 'y': y}
-            self._logger.info('LinearRegression skip train...')
+            self._logger.info('MNIST network skip train...')
             return
 
         W = self.neural_network(X, y)
         self._down_stream_data = {'w': W}
         end_time = time.time()
         self.process_time = end_time - start_time
-        self._logger.info('LinearRegression train end...')
+        self._logger.info('MNIST network train end...')
 
     def get_data(self, train_data):
         X = train_data[:,:-1]
@@ -92,9 +92,8 @@ class MNISTNetwork(AlgorithmBase):
         indexes = np.arange(labels.shape[0])
         W1 = init_weight(H, D*D+1)
         W2 = init_weight(O, H+1)
-        train_acc = []
-        test_acc = []
         for e in range(epoch):
+            print("start epoch {0}".format(e+1))
             pos = 0
             lr = init_lr/(e//10 + 1)
             np.random.shuffle(indexes)

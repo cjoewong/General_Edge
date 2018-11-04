@@ -25,14 +25,14 @@ sensorPiB:
     - data/mnist_B_small.npy
   downStream: gatewayPiA
 
-gatewayPiA:
+gatewayPiB:
   role: Algorithm
   classPath: algorithm
   className: MNISTNetwork
   btAddress: B8:27:EB:0E:3A:E6
   downStream: mnist_B
-  room: roomA
-  sensor: sensorA
+  room: roomB
+  sensor: sensorB
 
 sensorPiC:
   role: DataCollector
