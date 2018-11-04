@@ -4,7 +4,7 @@ sensorPiA:
   className: MNISTDataCollector
   btAddress: B8:27:EB:F3:2D:09
   dataFilePaths:
-    - data/mnist_A_small.npy
+    - data/mnist_A.npy
   downStream: gatewayPiA
 
 gatewayPiA:
