@@ -154,10 +154,9 @@ class MNISTNetwork(AlgorithmBase):
             item['Y'] = pickle.dumps(y)
         else:
             w = self._down_stream_data.get('w')
-            w0 = pickle.dumps(w[0])
-            w1 = pickle.dumps(w[1])
-            pickle.dump(w[0], open('mnistA_dump', 'wb'))
-            print(len(w0))
+            w0 = w[0].tolist()
+            w1 = w[1].tolist()
+            print(w0)
             item['w1'] = w0
             item['w2'] = w1
 
