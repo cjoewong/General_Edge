@@ -145,7 +145,6 @@ class Table:
         Raises a ClientError exception if the input dict doesn't contain mandatory keys.
         """
         try:
-            print(itemData)
             return self.table.put_item(Item = itemData)
         except ClientError as e:
             tip = "Your dict must have the following keys : " + self.getAttributes()

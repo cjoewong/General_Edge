@@ -62,7 +62,8 @@ class MNISTNetwork(AlgorithmBase):
         print(self._config.get("local", True))
         self._local = self._config.get("local", True)
         train_data = kwargs.get("train_data", [])
-        X, y = self.get_data(train_data)
+        print(train_data)
+        X, y = self.get_data(train_data[0].get("data"))
         if not self._local:
             self._down_stream_data = {'x': X, 'y': y}
             self._logger.info('MNIST network skip train...')
@@ -82,7 +83,7 @@ class MNISTNetwork(AlgorithmBase):
     def cleanup(self):
         pass
 
-    def neural_network(images, labels):
+    def neural_network(self, images, labels):
         init_lr = 0.01
         epoch = 10
         batch_size = 100
@@ -153,8 +154,12 @@ class MNISTNetwork(AlgorithmBase):
             item['Y'] = pickle.dumps(y)
         else:
             w = self._down_stream_data.get('w')
-            item['w1'] = pickle.dumps(w[0])
-            item['w2'] = pickle.dumps(w[1])
+            w0 = pickle.dumps(w[0])
+            w1 = pickle.dumps(w[1])
+            pickle.dump(w[0], open('mnistA_dump', 'wb'))
+            print(len(w0))
+            item['w1'] = w0
+            item['w2'] = w1
 
         item['bt_time'] = Decimal(str(bt_time))
         item['calculation_time'] = Decimal(str(self.process_time))
