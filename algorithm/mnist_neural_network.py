@@ -154,17 +154,23 @@ class MNISTNetwork(AlgorithmBase):
             item['Y'] = pickle.dumps(y)
         else:
             w = self._down_stream_data.get('w')
-            w10 = w[0][:160]
-            w11 = w[0][160:320]
-            w12 = w[0][320:480]
-            w13 = w[0][480:640]
-            w14 = w[0][640:]
+            w10 = w[0][:100]
+            w11 = w[0][100:200]
+            w12 = w[0][200:300]
+            w13 = w[0][300:400]
+            w14 = w[0][400:500]
+            w15 = w[0][500:600]
+            w16 = w[0][600:700]
+            w17 = w[0][700:]
             w2 = w[1]
             item['w10'] = pickle.dumps(w10)
             item['w11'] = pickle.dumps(w11)
             item['w12'] = pickle.dumps(w12)
             item['w13'] = pickle.dumps(w13)
             item['w14'] = pickle.dumps(w14)
+            item['w15'] = pickle.dumps(w15)
+            item['w16'] = pickle.dumps(w16)
+            item['w17'] = pickle.dumps(w17)
             item['w2'] = pickle.dumps(w2)
 
         item['bt_time'] = Decimal(str(bt_time))
