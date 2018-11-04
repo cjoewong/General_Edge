@@ -153,8 +153,10 @@ class MNISTNetwork(AlgorithmBase):
             item['image'] = pickle.dumps(X)
             item['Y'] = pickle.dumps(y)
         else:
-            w = self._down_stream_data.get('w')
-            w10 = w[0][:100]
+            w = self._down_stream_data.get('w').tolist()
+            w = [Decimal(str(float(num))) for num in row for row in w]
+            item['weight'] = w
+            """w10 = w[0][:100]
             w11 = w[0][100:200]
             w12 = w[0][200:300]
             w13 = w[0][300:400]
@@ -171,7 +173,7 @@ class MNISTNetwork(AlgorithmBase):
             item['w15'] = pickle.dumps(w15)
             item['w16'] = pickle.dumps(w16)
             item['w17'] = pickle.dumps(w17)
-            item['w2'] = pickle.dumps(w2)
+            item['w2'] = pickle.dumps(w2)"""
 
         item['bt_time'] = Decimal(str(bt_time))
         item['calculation_time'] = Decimal(str(self.process_time))
