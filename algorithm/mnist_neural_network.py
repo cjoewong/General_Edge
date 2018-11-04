@@ -110,7 +110,6 @@ class MNISTNetwork(AlgorithmBase):
                 # Initialize weight as uniform distribution.
                 z = softmax(activation(np.dot(data, W)))
                 pred = np.argmax(z, axis=1)[:,None]
-                print(sum(pred == batch_label))
                 oh_label = one_hot(batch_label)
                 L = oh_label*np.log(z)+(1-oh_label)*np.log(1-z)
                 #dL = -(oh_label/z - (1-oh_label)/(1-z))*activation.derivative()
