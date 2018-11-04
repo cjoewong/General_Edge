@@ -154,9 +154,9 @@ class MNISTNetwork(AlgorithmBase):
             item['Y'] = pickle.dumps(y)
         else:
             w = self._down_stream_data.get('w')
-            w1 = [Decimal(str(float(num))) for num in row for row in w[0]]
+            w1 = [[Decimal(str(float(num))) for num in row] for row in w[0]]
             item['weight1'] = w1
-            w2 = [Decimal(str(float(num))) for num in row for row in w[1]]
+            w2 = [[Decimal(str(float(num))) for num in row] for row in w[1]]
             item['weight2'] = w2
             """w10 = w[0][:100]
             w11 = w[0][100:200]
