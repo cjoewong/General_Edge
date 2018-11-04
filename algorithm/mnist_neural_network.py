@@ -39,6 +39,10 @@ def init_weight(d0, d1):
     std = np.sqrt(2.0 / (d0 + d1))
     return np.random.normal(0, std, (d0, d1))
 
+def softmax(x):
+    expx = np.exp(x)
+    return expx / np.sum(expx, axis=1)[:,None]
+
 class MNISTNetwork(AlgorithmBase):
 
     def __init__(self):
@@ -100,16 +104,17 @@ class MNISTNetwork(AlgorithmBase):
                 batch_data = images[indexes[pos:pos+batch_size]]
                 batch_label = labels[indexes[pos:pos+batch_size]]
                 pos += batch_size
-                data = np.reshape(batch_data, (-1, D*D))
-                b1 = np.ones((data.shape[0], 1))
-                data = np.concatenate((data, b1), axis=1)
+                b1 = np.ones((batch_data.shape[0], 1))
+                data = np.concatenate((batch_data, b1), axis=1)
                 activation = Sigmoid()
                 # Initialize weight as uniform distribution.
-                z = activation(np.dot(data, W))
+                z = softmax(activation(np.dot(data, W)))
                 pred = np.argmax(z, axis=1)[:,None]
+                print(sum(pred == batch_label))
                 oh_label = one_hot(batch_label)
                 L = oh_label*np.log(z)+(1-oh_label)*np.log(1-z)
-                dL = -(oh_label/z - (1-oh_label)/(1-z))*activation.derivative()
+                #dL = -(oh_label/z - (1-oh_label)/(1-z))*activation.derivative()
+                dL = (z - oh_label)*activation.derivative()
                 dW = 1/batch_label.shape[0]*np.dot(data.T, dL)
                 W -= lr*dW
         return W
