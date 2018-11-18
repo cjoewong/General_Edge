@@ -4,6 +4,8 @@ from .data_collector_base import DataCollectorBase
 from utils import bluetootch_utils
 import numpy as np
 
+DATA_POINTS = 1000
+
 class MNISTDataCollector(DataCollectorBase):
     """Linear Regression Data Collector
 
@@ -32,6 +34,6 @@ class MNISTDataCollector(DataCollectorBase):
 
     def run(self, **kwargs):
 #       raw_data = []
-        mnist = np.load(self._file_paths[0])
+        mnist = np.load(self._file_paths[0])[:DATA_POINTS]
         print('Collect data: {0}'.format(len(mnist)))
         self._data = {"from_pi": self._name, "data": mnist}
