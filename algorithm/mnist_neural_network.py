@@ -147,8 +147,8 @@ class MNISTNetwork(AlgorithmBase):
             # Both of our matrices have the same number of rows, hence one measure is enough
             np.save(sensor+'X.npy', X)
             np.save(sensor+'y.npy', y)
-            self.client.upload(sensor+'X.npy', 'mnist-nerual-network', sensor+'X.npy')
-            self.client.upload(sensor+'y.npy', 'mnist-nerual-network', sensor+'y.npy')
+            self.s3client.upload(sensor+'X.npy', 'mnist-nerual-network', sensor+'X.npy')
+            self.s3client.upload(sensor+'y.npy', 'mnist-nerual-network', sensor+'y.npy')
 
         else:
             w = self._down_stream_data.get('w')
