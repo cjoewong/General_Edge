@@ -1,5 +1,6 @@
 from .algorithm_base import AlgorithmBase
 from utils.dynamo_utils import Table
+from utils.s3_client import S3Client
 from decimal import Decimal
 import numpy as np
 import time
@@ -59,6 +60,7 @@ class MNISTNetwork(AlgorithmBase):
         self._logger = logging.getLogger('')
         self._logger.info('MNIST network Init finished...')
         self.process_time = 0
+        self.s3client = S3Client()
 
     def run(self, **kwargs):
         self._logger.info('MNIST network train start...')
@@ -143,8 +145,11 @@ class MNISTNetwork(AlgorithmBase):
             # Numpy indexes follow the [row][column] convention
             # ndarray.shape returns the dimensions as a (#OfRows, #OfColumns)
             # Both of our matrices have the same number of rows, hence one measure is enough
-            item['image'] = pickle.dumps(X)
-            item['Y'] = pickle.dumps(y)
+            np.save(sensor+'X.npy', X)
+            np.save(sensor+'y.npy', y)
+            self.client.upload(sensor+'X.npy', 'mnist-nerual-network', sensor+'X.npy')
+            self.client.upload(sensor+'y.npy', 'mnist-nerual-network', sensor+'y.npy')
+
         else:
             w = self._down_stream_data.get('w')
             item['weight'] = pickle.dumps(w)
