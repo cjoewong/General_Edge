@@ -38,6 +38,9 @@ def lambda_handler(event, context):
         table_A = Table('mnist_A')
         item_key = {'forum': 'roomA', 'subject': subject}
         item_A = table_A.getItem(item_key)
+        if 'weight' not in item_A:
+            print('weight not found in mnist_A, terminate here!')
+            break
         weight_A = pickle.loads(item_A['weight'].value)
 
         table_B = Table('mnist_B')
@@ -65,4 +68,5 @@ def lambda_handler(event, context):
             'time': decimal.Decimal(str(time.time() - lambda_start))
         }
         item = table.addItem(result_data)
-        print(item)
+
+    print("Finished")
