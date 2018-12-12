@@ -91,7 +91,7 @@ class MNISTNetwork(AlgorithmBase):
 
     def neural_network(self, images, labels):
         init_lr = 0.01
-        epoch = 10
+        epoch = 20
         batch_size = 100
         D = 28
         O = 10
