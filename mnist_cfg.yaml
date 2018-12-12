@@ -14,7 +14,7 @@ gatewayPiA:
   btAddress: B8:27:EB:0E:3A:E6
   downStream: mnist_A
   room: roomA
-  sensor: mnist4000
+  sensor: mnist3000
 
 sensorPiB:
   role: DataCollector
@@ -32,7 +32,7 @@ gatewayPiB:
   btAddress: B8:27:EB:0E:3A:E6
   downStream: mnist_B
   room: roomB
-  sensor: mnist4000
+  sensor: mnist3000
 
 sensorPiC:
   role: DataCollector
