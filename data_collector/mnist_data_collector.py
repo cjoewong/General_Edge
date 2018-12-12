@@ -4,7 +4,7 @@ from .data_collector_base import DataCollectorBase
 from utils import bluetootch_utils
 import numpy as np
 
-DATA_POINTS = 20000
+DATA_POINTS = 19000
 
 class MNISTDataCollector(DataCollectorBase):
     """Linear Regression Data Collector
