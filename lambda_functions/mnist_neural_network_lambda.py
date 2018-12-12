@@ -44,7 +44,7 @@ def lambda_handler(event, context):
         weight_A = pickle.loads(item_A['weight'].value)
 
         table_B = Table('mnist_B')
-        item_key = {'forum': 'roomB', 'subject': 'sensorB'}
+        item_key = {'forum': 'roomB', 'subject': subject}
         item_B = table_B.getItem(item_key)
         weight_B = pickle.loads(item_B['weight'].value)
         print("Get weight for trainning size: {0}".format(train_size))
@@ -62,7 +62,7 @@ def lambda_handler(event, context):
                                'time': decimal.Decimal(str(round_end - round_start))}
         table = Table('mnresult', ['environment', 'S'])
         result_data = {
-            'environment': 'roomA',
+            'environment': 'roomA_' + subject,
             'sensor': 'test_' + subject,
             'round': results,
             'time': decimal.Decimal(str(time.time() - lambda_start))
