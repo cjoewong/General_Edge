@@ -60,22 +60,24 @@ def send() //Send data to the downstream.
 
 ### Get started
 
-#### Wifi and SSH Configuration
+#### Local Pipeline
+
+##### Wifi and SSH Configuration
 If you want Raspberry Pis to connect Wifi and use SSH to login the Pis, you should put <b>utils/ssh</b> and <b>utils/wpa_supplicant.conf</b> in the root directory of your Raspberry Pi.
 
-#### Configure AWS credential
+##### Configure AWS credential
 ```
 export aws_access_key_id="XXXXXX"
 export aws_secret_access_key="XXXXX"
 ```
 
-#### Install
+##### Install
 On every Raspberry Pi, clone this repository.
 ```sh
 $ git clone https://github.com/YoungYang0820/General_Edge.git
 ```
 
-#### Raspberry Pi Configuration
+##### Raspberry Pi Configuration
 On every Raspberry Pi, you need to open bluetooth at first.
 ```sh
 $ sudo apt-get install bluetooth libbluetooth-dev
@@ -95,7 +97,7 @@ Then, install the corresponding packages.
 sudo pip3 install -r requirement.txt
 ```
 
-#### Run
+##### Run
 You should run based on your config file. 
 ```sh
 $ python3 pi_manager.py [config file] [pi name]
@@ -104,3 +106,27 @@ $ python3 pi_manager.py base_cfg.yaml sensorPiA
 $ python3 pi_manager.py base_cfg.yaml gatewayPiA
 ```
 
+#### Remote Lambda
+
+##### Package
+* Enter the lambda_functions/ and use `make` command to generate required files.
+```sh
+make mnist_nn
+```
+* `scp` all files inside the lambda_functions/package/ to remote `ec2 VM`
+```sh
+scp lambda_functions/package/* remote@vm:~/your_own_path
+```
+* Install all required **python-packages** in `ec2 VM`
+
+* Generate zip file and upload it to `s3` bucket
+https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
+
+##### Lambda Function Configurations
+* Memory Limit -> 1024MB
+* Timeout Limit -> 10 min
+* Environment Variables:
+```
+aws_access_key_id="XXXXXX"
+aws_secret_access_key="XXXXX"
+```
