@@ -1,0 +1,61 @@
+# This the the base configruation file
+# Here we have 3 pair pis
+# sensorPiA gatewayPiA - Local Computing Resources
+# sensorPiB gatewayPiB - Local Conputing Resources
+# sensorPiC gatewayPiC - Data Transfer station
+
+RPiA:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataA
+  downStream: sensingdata_A
+  room: roomA
+  sensor: sensorA
+  
+RPiB:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataB
+  downStream: sensingdata_B
+  room: roomB
+  sensor: sensorB
+  
+RPiC:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataC
+  downStream: sensingdata_C
+  room: roomC
+  sensor: sensorC
+  
+RPiD:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataD
+  downStream: sensingdata_D
+  room: roomD
+  sensor: sensorD
+  
+RPiE:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataE
+  downStream: sensingdata_E
+  room: roomE
+  sensor: sensorE
+  
+RPiF:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataF
+  downStream: sensingdata_F
+  room: roomF
+  sensor: sensorF
+  
+RPiG:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataG
+  downStream: sensingdata_G
+  room: roomG
+  sensor: sensorG

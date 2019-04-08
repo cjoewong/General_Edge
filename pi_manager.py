@@ -9,6 +9,11 @@ import importlib
 import utils.bluetootch_utils as BT
 from utils.dependency_handler import DependencyHandler
 
+sys.path.append('D:\CMU_Research\Federated Learning\Git Repo\data_collector')
+sys.path.append('D:\CMU_Research\Federated Learning\Git Repo\algorithm')
+
+import linear_regression_data_collector as sensor
+import linear_regression_algorithm as gateway
 
 def init_logger(config_path, verbosity):
     """
@@ -29,16 +34,10 @@ if __name__ == '__main__':
 
     # Setup the command line argument
     parser = argparse.ArgumentParser()
-    parser.add_argument("cfg_file_path",
-                        help="The path of configuration file")
-    parser.add_argument("pi_name",
-                        help="The name of this pi")
-    parser.add_argument("-v", "--verbosity",
-                        action="store_true",
-                        help="The log level")
-    parser.add_argument("-l", "--logconfig",
-                        default="./configuration/logconfig.ini",
-                        help="The log configuration file")
+    parser.add_argument("cfg_file_path", help="The path of configuration file")
+    parser.add_argument("pi_name", help="The name of this pi")
+    parser.add_argument("-v", "--verbosity", action="store_true", help="The log level")
+    parser.add_argument("-l", "--logconfig", default="./configuration/logconfig.ini", help="The log configuration file")
     args = parser.parse_args()
 
     init_logger(args.logconfig, args.verbosity)
@@ -52,30 +51,17 @@ if __name__ == '__main__':
     with open(args.cfg_file_path) as f:
         global_config = yaml.load(f)
 
-    # Resolve Pi's dependencies
+    # Resolve Pi's dependencies - Not needed
     dependency_handler = DependencyHandler(global_config)
 
     # Schedule Pi's and the Pi will only be scheduled when all its dependencies
     # are resolved
     train_data = []
     total_bt_time = 0
-    while not dependency_handler.dependency_resolved(args.pi_name):
-        logger.info("Waiting for Pi-{0}'s dependencies...".format(args.pi_name))
-        bt_time, recv_data = BT.listenOnBluetooth(1)
-        total_bt_time += bt_time
-        train_data.append(recv_data)
-        from_pi = recv_data.get('from_pi')
-        dependency_handler.add_resolved_dependency(from_pi, args.pi_name)
 
     # Run it's main function
     my_config = global_config.get(args.pi_name)
     role = my_config.get("role")
-    if role == "DataCollector":
-        pass
-    elif role == "Algorithm":
-        pass
-    else:
-        raise RuntimeError("Error role of pi-{0}".format(args.pi_name))
 
     # Use reflection to dynamically new instance
     class_path = my_config.get("classPath")
@@ -83,24 +69,28 @@ if __name__ == '__main__':
     m = importlib.import_module(class_path)
     clz = getattr(m, class_name)
 
-    try:
-        down_stream = my_config.get("downStream")
-        print("down_stream:" + down_stream)
-        if down_stream is None:
-            raise RuntimeError()
-        down_addr = global_config.get(down_stream).get("btAddress")
-    except Exception:
-        logger.warn("Pi-{0} has no down stream, right?".format(args.pi_name))
-        down_addr = ""
+	# TO BE CHANGED WITHIN THE CONFIG FILE
+    down_addr = sensingdata_A
 
     logger.info("Run worker...")
 
     t1 = time.time()
     worker = clz()
-    worker.init(args.pi_name, my_config)
-    worker.run(train_data=train_data)
-    worker.send(down_addr=down_addr, bt_time=total_bt_time)
-    worker.cleanup()
+	
+    sensor.init(args.pi_name, my_config)
+    sensor.run()
+    train_data = sensor.send(down_addr=down_addr, bt_time=total_bt_time)
+    sensor.cleanup()
+	
+	# Simulate Transmission delay
+	# Store training data in a variable
+	
+    sensor.init(args.pi_name, my_config)
+    sensor.run(train_data=train_data)
+    sensor.send(down_addr=down_addr, bt_time=total_bt_time)
+    sensor.cleanup()
+	
+	
     t2 = time.time()
 
     logger.info("End....")
