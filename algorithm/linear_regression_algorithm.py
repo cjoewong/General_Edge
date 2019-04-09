@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .algorithm_base import AlgorithmBase
+from algorithm_base import AlgorithmBase
 from utils.dynamo_utils import Table
 from decimal import Decimal
 import numpy as np
@@ -66,10 +66,9 @@ class LinearRegression(AlgorithmBase):
         """
         X = []
         y = []
-        for data in train_data:
-            for row in data.get("data"):
-                X.append(list(map(lambda x : float(x), row[:-1])))
-                y.append(float(row[-1]))
+        for row in train_data.get("data"):
+            X.append(list(map(lambda x : float(x), row[:-1])))
+            y.append(float(row[-1]))
         return X, y
 
     def cleanup(self):
@@ -118,7 +117,7 @@ class LinearRegression(AlgorithmBase):
                 print(str(count), " iterations so far...")
 
             # Test if restricting iterations affects the quality
-            if count == 50:
+            if count == 2:
                 break
 
         return w_new, 0

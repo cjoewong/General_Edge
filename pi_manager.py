@@ -5,12 +5,14 @@ import logging.config
 import time
 import yaml
 import importlib
+import sys
+import json
 
 import utils.bluetootch_utils as BT
 from utils.dependency_handler import DependencyHandler
 
-sys.path.append('D:\CMU_Research\Federated Learning\Git Repo\data_collector')
-sys.path.append('D:\CMU_Research\Federated Learning\Git Repo\algorithm')
+sys.path.append('/home/pi/General_Edge/Git Repo/data_collector')
+sys.path.append('/home/pi/General_Edge/Git Repo/algorithm')
 
 import linear_regression_data_collector as sensor
 import linear_regression_algorithm as gateway
@@ -66,30 +68,41 @@ if __name__ == '__main__':
     # Use reflection to dynamically new instance
     class_path = my_config.get("classPath")
     class_name = my_config.get("className")
-    m = importlib.import_module(class_path)
-    clz = getattr(m, class_name)
+    #m = importlib.import_module(class_path)
+    #clz = getattr(m, class_name)
 
 	# TO BE CHANGED WITHIN THE CONFIG FILE
-    down_addr = sensingdata_A
+    down_addr = 'sensingdata_A'
 
     logger.info("Run worker...")
 
     t1 = time.time()
-    worker = clz()
+    print('Running...')
 	
-    sensor.init(args.pi_name, my_config)
-    sensor.run()
-    train_data = sensor.send(down_addr=down_addr, bt_time=total_bt_time)
-    sensor.cleanup()
+    sensor_node = sensor.LinearRegressionDataCollector(args.cfg_file_path)
+    gateway_node = gateway.LinearRegression()
+	
+	
+    sensor_node.init(args.pi_name, my_config)
+    sensor_node.run()
+    train_data = sensor_node.send(down_addr=down_addr, bt_time=total_bt_time)
+    sensor_node.cleanup()
+
+    print('Train Data Start')
+    #print( )
+    #print(train_data.get("data"))
+    #print( )
+    print('Train Data End')
 	
 	# Simulate Transmission delay
 	# Store training data in a variable
 	
-    sensor.init(args.pi_name, my_config)
-    sensor.run(train_data=train_data)
-    sensor.send(down_addr=down_addr, bt_time=total_bt_time)
-    sensor.cleanup()
-	
+    gateway_node.init(args.pi_name, my_config)
+    gateway_node.run(train_data=train_data)
+    gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
+    gateway_node.cleanup()
+    
+    print('Check DynamoDB')
 	
     t2 = time.time()
 

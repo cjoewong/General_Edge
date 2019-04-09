@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from .data_collector_base import DataCollectorBase
+from data_collector_base import DataCollectorBase
 from utils import bluetootch_utils
 
 
@@ -36,8 +36,7 @@ class LinearRegressionDataCollector(DataCollectorBase):
         Send data to the downStream Gateway Pi
         """
         down_addr = kwargs.get('down_addr')
-        
-		return self._data
+        return self._data
 
     def run(self, **kwargs):
         """
