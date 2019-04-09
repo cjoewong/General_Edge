@@ -35,5 +35,13 @@ def initializeTable(nameOfTable, hashKey, rangeKey, hashVal, rangeVal):
 initializeTable('mnist_A', 'forum', 'subject', 'roomA', 'sensorA')
 initializeTable('mnist_B', 'forum', 'subject', 'roomB', 'sensorB')
 initializeTable('mnist_C', 'forum', 'subject', 'roomC', 'sensorC')
+
+initializeTable('sensingdata_A', 'forum', 'subject', 'roomA', 'sensorA')
+initializeTable('sensingdata_B', 'forum', 'subject', 'roomB', 'sensorB')
+initializeTable('sensingdata_C', 'forum', 'subject', 'roomC', 'sensorC')
+initializeTable('sensingdata_D', 'forum', 'subject', 'roomD', 'sensorD')
+initializeTable('sensingdata_E', 'forum', 'subject', 'roomE', 'sensorE')
+initializeTable('sensingdata_F', 'forum', 'subject', 'roomF', 'sensorF')
+initializeTable('sensingdata_G', 'forum', 'subject', 'roomG', 'sensorG')
 # feature
 initializeTable('testresult', 'environment', 'sensor', 'roomA', 'sensorA&B&C')
