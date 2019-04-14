@@ -8,11 +8,11 @@ import importlib
 import sys
 import json
 
-import utils.bluetootch_utils as BT
 from utils.dependency_handler import DependencyHandler
+from utils.dynamo_utils import Table
 
-sys.path.append('/home/pi/General_Edge/Git Repo/data_collector')
-sys.path.append('/home/pi/General_Edge/Git Repo/algorithm')
+sys.path.append('/home/pi/Git Repo/data_collector')
+sys.path.append('/home/pi/Git Repo/algorithm')
 
 import linear_regression_data_collector as sensor
 import linear_regression_algorithm as gateway
@@ -76,35 +76,46 @@ if __name__ == '__main__':
 
     logger.info("Run worker...")
 
-    t1 = time.time()
     print('Running...')
 	
     sensor_node = sensor.LinearRegressionDataCollector(args.cfg_file_path)
     gateway_node = gateway.LinearRegression()
-	
-	
-    sensor_node.init(args.pi_name, my_config)
-    sensor_node.run()
-    train_data = sensor_node.send(down_addr=down_addr, bt_time=total_bt_time)
-    sensor_node.cleanup()
-
-    print('Train Data Start')
-    #print( )
-    #print(train_data.get("data"))
-    #print( )
-    print('Train Data End')
-	
-	# Simulate Transmission delay
-	# Store training data in a variable
-	
-    gateway_node.init(args.pi_name, my_config)
-    gateway_node.run(train_data=train_data)
-    gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
-    gateway_node.cleanup()
     
-    print('Check DynamoDB')
+    gateway_node.init(args.pi_name, my_config)
+    sensor_node.init(args.pi_name, my_config)
+
+    # This should loop
+    loop_count = 0
+    max_loop_count = 5
+    while(loop_count<max_loop_count):	
+        t1 = time.time()
+        table = Table('testresult')
+        record = table.getItem({'environment' : 'roomA', 'sensor' : 'sensorA&B&C'})
+        w_1 = record['w_1']
+        w_2 = record['w_2']
+        print('weights')
+        print(w_1,w_2)
+        
+        sensor_node.run()
+        train_data = sensor_node.send(down_addr=down_addr, bt_time=total_bt_time)
+        sensor_node.cleanup()
+
+        print('Train Data Start')
+        #print( )
+        #print(train_data.get("data"))
+        #print( )
+        print('Train Data End')
 	
-    t2 = time.time()
+	    # Simulate Transmission delay
+	    # Store training data in a variable
+	
+        gateway_node.run(train_data=train_data,w_1=w_1,w_2=w_2)
+        gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
+        gateway_node.cleanup()
+    
+        print('Check DynamoDB')
+	
+        t2 = time.time()
 
     logger.info("End....")
     print("End...")

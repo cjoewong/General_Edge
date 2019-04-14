@@ -32,6 +32,8 @@ class LinearRegression(AlgorithmBase):
         self._logger = logging.getLogger('')
         self._logger.info('LinearRegression Init finished...')
         self.process_time = 0
+        self.w = np.zeros((3, 1))
+        self.b = 0
 
     def run(self, **kwargs):
         """
@@ -51,8 +53,15 @@ class LinearRegression(AlgorithmBase):
 
         X = np.array(X)
         y = np.array(y)
-        w, b = self.gradient_descent(X, y)
-        self._down_stream_data = {'w': w, 'b': b}
+        
+        w_1 = kwargs.get("w_1",[])
+        w_2 = kwargs.get("w_2",[])
+        
+        if(w_1!=self.w[1] or w_2!=self.w[2]):
+            self.w[1] = w_1
+            self.w[2] = w_2
+            self.w, self.b = self.gradient_descent(X, y)
+        self._down_stream_data = {'w': self.w, 'b': self.b}
         end_time = time.time()
         self.process_time = end_time - start_time
         self._logger.info('LinearRegression train end...')
@@ -88,7 +97,7 @@ class LinearRegression(AlgorithmBase):
         target_matrix = target_matrix[:, None]
         count = 0
         w_old = np.zeros((3, 1))
-        w_new = np.zeros((3, 1))
+        w_new = self.w
         E_old = 0
         E_new = 0
         delta_E = np.zeros((len(design_matrix), 3))
@@ -96,6 +105,7 @@ class LinearRegression(AlgorithmBase):
 
         # tolerance = 1e-5
         while True:
+            print(w_old)
             w_old = w_new
 
             for i in range(len(design_matrix)):
@@ -117,7 +127,7 @@ class LinearRegression(AlgorithmBase):
                 print(str(count), " iterations so far...")
 
             # Test if restricting iterations affects the quality
-            if count == 2:
+            if count == 50:
                 break
 
         return w_new, 0

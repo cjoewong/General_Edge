@@ -1,0 +1,2 @@
+export aws_secret_access_key=mP4HT5GdvbD1iNw7TrmIzWYEzS2SNcBKn9QZlNez
+export aws_access_key_id=AKIAIBWFOLXMPXYBQ7YA
