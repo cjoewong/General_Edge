@@ -57,7 +57,7 @@ class LinearRegression(AlgorithmBase):
         w_1 = kwargs.get("w_1",[])
         w_2 = kwargs.get("w_2",[])
         
-        if(w_1!=self.w[1] or w_2!=self.w[2]):
+        if(w_1!=self.w[1] or w_2!=self.w[2] or w_1==1 or w_2==1):
             self.w[1] = w_1
             self.w[2] = w_2
             self.w, self.b = self.gradient_descent(X, y)
@@ -105,7 +105,6 @@ class LinearRegression(AlgorithmBase):
 
         # tolerance = 1e-5
         while True:
-            print(w_old)
             w_old = w_new
 
             for i in range(len(design_matrix)):
@@ -182,6 +181,7 @@ class LinearRegression(AlgorithmBase):
         item['calculation_time'] = Decimal(str(self.process_time))
         table.addItem(item)
         end_time = time.time()
+        print('End Time : ',end_time)
 
         upload_time = end_time - start_time
         item['upload_time'] = Decimal(str(upload_time))

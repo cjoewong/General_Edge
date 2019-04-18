@@ -11,11 +11,12 @@ import json
 from utils.dependency_handler import DependencyHandler
 from utils.dynamo_utils import Table
 
+
 sys.path.append('/home/pi/Git Repo/data_collector')
 sys.path.append('/home/pi/Git Repo/algorithm')
 
-import linear_regression_data_collector as sensor
-import linear_regression_algorithm as gateway
+import data_collector.linear_regression_data_collector as sensor
+import algorithm.linear_regression_algorithm as gateway
 
 def init_logger(config_path, verbosity):
     """
@@ -86,19 +87,29 @@ if __name__ == '__main__':
 
     # This should loop
     loop_count = 0
-    max_loop_count = 5
+    max_loop_count = 1
+    start_time = time.time()
+    print('Start Time :',start_time)
     while(loop_count<max_loop_count):	
         t1 = time.time()
-        table = Table('testresult')
-        record = table.getItem({'environment' : 'roomA', 'sensor' : 'sensorA&B&C'})
-        w_1 = record['w_1']
-        w_2 = record['w_2']
-        print('weights')
-        print(w_1,w_2)
+        try:
+            table = Table('testresult','roomA','SensorA&B')
+            record = table.getItem({'environment' : 'roomA', 'sensor' : 'sensorA&B&C'})
+            w_1 = record['w_1']
+            w_2 = record['w_2']
+        except:
+            w_1 = 1
+            w_2 = 1
+        else:		
+            print('weights')
+            print(w_1,w_2)
+        print('Received weights : ',time.time())
         
         sensor_node.run()
         train_data = sensor_node.send(down_addr=down_addr, bt_time=total_bt_time)
         sensor_node.cleanup()
+
+        print('Sensing done : ',time.time())
 
         print('Train Data Start')
         #print( )
@@ -116,6 +127,7 @@ if __name__ == '__main__':
         print('Check DynamoDB')
 	
         t2 = time.time()
+        loop_count+=1
 
     logger.info("End....")
     print("End...")

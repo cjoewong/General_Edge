@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from data_collector_base import DataCollectorBase
-from utils import bluetootch_utils
 
 
 class LinearRegressionDataCollector(DataCollectorBase):
