@@ -7,6 +7,7 @@ import yaml
 import importlib
 import sys
 import json
+import random
 
 from utils.dependency_handler import DependencyHandler
 from utils.dynamo_utils import Table
@@ -89,9 +90,10 @@ if __name__ == '__main__':
     loop_count = 0
     max_loop_count = 1
     start_time = time.time()
-    print('Start Time :',start_time)
+    
     while(loop_count<max_loop_count):	
         t1 = time.time()
+        print('Start Time :',start_time)
         try:
             table = Table('testresult','roomA','SensorA&B')
             record = table.getItem({'environment' : 'roomA', 'sensor' : 'sensorA&B&C'})
@@ -100,9 +102,9 @@ if __name__ == '__main__':
         except:
             w_1 = 1
             w_2 = 1
-        else:		
-            print('weights')
-            print(w_1,w_2)
+        #else:		
+            #print('weights')
+            #print(w_1,w_2)
         print('Received weights : ',time.time())
         
         sensor_node.run()
@@ -111,11 +113,11 @@ if __name__ == '__main__':
 
         print('Sensing done : ',time.time())
 
-        print('Train Data Start')
+        #print('Train Data Start')
         #print( )
         #print(train_data.get("data"))
         #print( )
-        print('Train Data End')
+        #print('Train Data End')
 	
 	    # Simulate Transmission delay
 	    # Store training data in a variable
@@ -124,10 +126,16 @@ if __name__ == '__main__':
         gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
         gateway_node.cleanup()
     
-        print('Check DynamoDB')
+        #print('Check DynamoDB')
 	
         t2 = time.time()
         loop_count+=1
+		
+        print('Loop End Time : ',time.time())
+        delay = random.randint(20,120)		
+        print('Sleep for : ',delay)
+        time.sleep(delay)
+        print()
 
     logger.info("End....")
     print("End...")
