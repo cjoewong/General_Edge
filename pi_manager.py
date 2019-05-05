@@ -74,7 +74,7 @@ if __name__ == '__main__':
     #clz = getattr(m, class_name)
 
 	# TO BE CHANGED WITHIN THE CONFIG FILE
-    down_addr = 'sensingdata_A'
+    down_addr = "B8:27:EB:68:A5:4C"
 
     logger.info("Run worker...")
 
@@ -94,43 +94,43 @@ if __name__ == '__main__':
     while(loop_count<max_loop_count):	
         t1 = time.time()
         print('Start Time :',start_time)
-        try:
-            table = Table('testresult','roomA','SensorA&B')
-            record = table.getItem({'environment' : 'roomA', 'sensor' : 'sensorA&B&C'})
-            w_1 = record['w_1']
-            w_2 = record['w_2']
-        except:
-            w_1 = 1
-            w_2 = 1
-        #else:		
-            #print('weights')
-            #print(w_1,w_2)
-        print('Received weights : ',time.time())
-        
-        sensor_node.run()
-        train_data = sensor_node.send(down_addr=down_addr, bt_time=total_bt_time)
-        sensor_node.cleanup()
+		
+        if(role=='gateway'):
+		
+			# Gateway Functionality
+			
+            '''try:
+				table = Table('testresult','roomA','SensorA&B')
+				record = table.getItem({'environment' : 'roomA', 'sensor' : 'sensorA&B&C'})
+				weights = record['features']
+				w_1 = weights['w_1']
+				w_2 = weights['w_2']
+			except:
+				w_1 = 1
+				w_2 = 1
+				
+			gateway_node.run(train_data=train_data,w_1=w_1,w_2=w_2)
+			gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
+			gateway_node.cleanup()
+			t2 = time.time()
+			print('Received weights in ',t2-t1)'''
+			
 
-        print('Sensing done : ',time.time())
-
-        #print('Train Data Start')
-        #print( )
-        #print(train_data.get("data"))
-        #print( )
-        #print('Train Data End')
+		
+        if(role=='sensor'):
+            t2 = time.time()
+            sensor_node.run()
+            train_data = sensor_node.send(down_addr=down_addr, bt_time=total_bt_time)
+            sensor_node.cleanup()
+            t3 = time.time()        
+            print('Sensing done in ',t3-t2)
 	
 	    # Simulate Transmission delay
 	    # Store training data in a variable
 	
-        gateway_node.run(train_data=train_data,w_1=w_1,w_2=w_2)
-        gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
-        gateway_node.cleanup()
-    
-        #print('Check DynamoDB')
-	
-        t2 = time.time()
+        t4 = time.time()        
         loop_count+=1
-		
+        print('Gateway Algo done in ',t4-t3)		
         print('Loop End Time : ',time.time())
         delay = random.randint(20,120)		
         print('Sleep for : ',delay)

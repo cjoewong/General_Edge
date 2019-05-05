@@ -42,29 +42,38 @@ class LinearRegression(AlgorithmBase):
         """
         self._logger.info('LinearRegression train start...')
         start_time = time.time()
-        print(self._config.get("local", True))
+        print("Local Computation : ",self._config.get("local", True))
         self._local = self._config.get("local", True)
         train_data = kwargs.get("train_data", [])
         X, y = self.get_data(train_data)
+		
+		# No Local computation -- Do Nothing, build data packet
+		
         if not self._local:
             self._down_stream_data = {'x': X, 'y': y}
             self._logger.info('LinearRegression skip train...')
             return
-
-        X = np.array(X)
-        y = np.array(y)
+			
+		# Local computation -- Local SGD Procedure
+		
+        else:
+            X = np.array(X)
+            y = np.array(y)
         
-        w_1 = kwargs.get("w_1",[])
-        w_2 = kwargs.get("w_2",[])
+            w_1 = kwargs.get("w_1",[])
+            w_2 = kwargs.get("w_2",[])
         
-        if(w_1!=self.w[1] or w_2!=self.w[2] or w_1==1 or w_2==1):
-            self.w[1] = w_1
-            self.w[2] = w_2
-            self.w, self.b = self.gradient_descent(X, y)
-        self._down_stream_data = {'w': self.w, 'b': self.b}
-        end_time = time.time()
-        self.process_time = end_time - start_time
+            if(w_1!=self.w[1] or w_2!=self.w[2] or w_1==1 or w_2==1):
+                self.w[1] = w_1
+                self.w[2] = w_2
+                self.w, self.b = self.gradient_descent(X, y)
+            self._down_stream_data = {'w': self.w, 'b': self.b}
+            end_time = time.time()
+            self.process_time = end_time - start_time
+			
         self._logger.info('LinearRegression train end...')
+
+# Receive Data from Downstream (Either Bluetooth or Simulated)
 
     def get_data(self, train_data):
         """
@@ -85,6 +94,8 @@ class LinearRegression(AlgorithmBase):
         Clean up
         """
         pass
+
+# Stochastic Gradient Descent Algorithm for Local Computation
 
     def gradient_descent(self, design_matrix, target_matrix):
         """
@@ -131,6 +142,8 @@ class LinearRegression(AlgorithmBase):
 
         return w_new, 0
 
+# Send data upstream to DynamoDB
+
     def send(self, **kwargs):
         """
         Send the model to the downstream and here it is Dynamo
@@ -151,7 +164,9 @@ class LinearRegression(AlgorithmBase):
             'forum'     : room,
             'subject'   : sensor
         })
-
+		
+        # No Local computation -- Send only Data
+		
         if not self._local:
             X = self._down_stream_data.get('x')
             y = self._down_stream_data.get('y')
@@ -168,6 +183,9 @@ class LinearRegression(AlgorithmBase):
                 aggregated_items.append(currentItem)
             item['aggregated_data'] = aggregated_items
             processed_data_size = -1
+			
+        # Local computation -- Send calculated weights only 		
+		
         else:
             w = self._down_stream_data.get('w')
             b = self._down_stream_data.get('b')
@@ -179,7 +197,6 @@ class LinearRegression(AlgorithmBase):
         item['bt_time'] = Decimal(str(bt_time))
         item['processed_data_size'] = Decimal(str(processed_data_size))
         item['calculation_time'] = Decimal(str(self.process_time))
-        table.addItem(item)
         end_time = time.time()
         print('End Time : ',end_time)
 

@@ -11,7 +11,7 @@ RPiA:
   downStream: sensingdata_A
   room: roomA
   sensor: sensorA
-  local: False
+  local: True
   
 RPiB:
   btAddress: B8:27:EB:F3:2D:09
@@ -20,7 +20,7 @@ RPiB:
   downStream: sensingdata_B
   room: roomB
   sensor: sensorB
-  local: False
+  local: True
   
 RPiC:
   btAddress: B8:27:EB:F3:2D:09
@@ -29,7 +29,7 @@ RPiC:
   downStream: sensingdata_C
   room: roomC
   sensor: sensorC
-  local: False
+  local: True
   
 RPiD:
   btAddress: B8:27:EB:F3:2D:09
