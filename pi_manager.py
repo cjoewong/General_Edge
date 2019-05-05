@@ -74,7 +74,7 @@ if __name__ == '__main__':
     #clz = getattr(m, class_name)
 
 	# TO BE CHANGED WITHIN THE CONFIG FILE
-    down_addr = "B8:27:EB:68:A5:4C"
+    down_addr = "B8:27:EB:D3:D7:AF"
 
     logger.info("Run worker...")
 

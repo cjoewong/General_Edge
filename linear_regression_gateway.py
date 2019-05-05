@@ -14,6 +14,7 @@ import json
 import random
 import multiprocessing
 import time
+import sys
 
 from utils.dependency_handler import DependencyHandler
 from utils.dynamo_utils import Table
@@ -45,22 +46,36 @@ gateway_node.init(args.pi_name, my_config)
 def put_data(q):
 	while(1):
 		bt_time, recv_data = BT.listenOnBluetooth(1)
+		id = recv_data.get('from_pi')
+		print()
+		print("Data Received from ",id)
+		print("Length of Queue : ",q.qsize())
+		print()
 		q.put([recv_data,bt_time])
 	return recv_data
 	
 def print_stack(q):
 	while(1):
+		t_start = time.time()
 		current_data 	= q.get()
 		total_bt_time 	= current_data[1]
 		current_data 	= current_data[0]
+		id = current_data.get('from_pi')
+		print("Processing Data from ",id)
 		if(current_data):
-			print("Rx Data!")
 			w_1 = 0
 			w_2 = 0
+			t_algo = time.time()
+			print("Rx time : ",t_algo-t_start)
 			gateway_node.run(train_data=current_data,w_1=w_1,w_2=w_2)
+			t_tx = time.time()
+			print("Algo time : ",t_tx-t_algo)
 			gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
+			t_end = time.time()
+			print("Tx time : ",t_end-t_tx)
 			gateway_node.cleanup()
-			time.sleep(5)
+			print("Total time : ",t_end-t_start)
+			print()
 		else:
 			print('No data received')
 			time.sleep(5)
@@ -74,6 +89,8 @@ q = multiprocessing.Queue()
 
 proc_1 = multiprocessing.Process(target=put_data,args=(q,))
 proc_2 = multiprocessing.Process(target=print_stack,args=(q,))
+
+print("Processes started!")
 
 proc_1.start()
 proc_2.start()

@@ -12,6 +12,7 @@ RPiA:
   room: roomA
   sensor: sensorA
   local: True
+  role : sensor
   
 RPiB:
   btAddress: B8:27:EB:F3:2D:09
@@ -21,6 +22,7 @@ RPiB:
   room: roomB
   sensor: sensorB
   local: True
+  role : sensor
   
 RPiC:
   btAddress: B8:27:EB:F3:2D:09
@@ -30,6 +32,7 @@ RPiC:
   room: roomC
   sensor: sensorC
   local: True
+  role : sensor
   
 RPiD:
   btAddress: B8:27:EB:F3:2D:09
@@ -39,6 +42,7 @@ RPiD:
   room: roomD
   sensor: sensorD
   local: False
+  role : sensor
   
 RPiE:
   btAddress: B8:27:EB:F3:2D:09
@@ -48,6 +52,7 @@ RPiE:
   room: roomE
   sensor: sensorE
   local: False
+  role : gateway
   
 RPiF:
   btAddress: B8:27:EB:F3:2D:09
@@ -57,6 +62,7 @@ RPiF:
   room: roomF
   sensor: sensorF
   local: False
+  role : sensor
   
 RPiG:
   btAddress: B8:27:EB:F3:2D:09
@@ -66,3 +72,4 @@ RPiG:
   room: roomG
   sensor: sensorG
   local: False
+  role : sensor
