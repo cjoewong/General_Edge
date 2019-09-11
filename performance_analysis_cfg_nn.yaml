@@ -1,0 +1,75 @@
+# This the the base configruation file
+# Here we have 3 pair pis
+# sensorPiA gatewayPiA - Local Computing Resources
+# sensorPiB gatewayPiB - Local Conputing Resources
+# sensorPiC gatewayPiC - Data Transfer station
+
+RPiA:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_A.npy
+  downStream: mnist_A
+  room: roomA
+  sensor: mnist1000
+  local: True
+  role : gateway
+  
+RPiB:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_B.npy
+  downStream: mnist_B
+  room: roomB
+  sensor: mnist1000
+  local: True
+  role : sensor
+  
+RPiC:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_C.npy
+  downStream: sensingdata_C
+  room: roomC
+  sensor: sensorC
+  local: True
+  role : sensor
+  
+RPiD:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_D.npy
+  downStream: sensingdata_D
+  room: roomD
+  sensor: sensorD
+  local: False
+  role : sensor
+  
+RPiE:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_E.npy
+  downStream: sensingdata_E
+  room: roomE
+  sensor: sensorE
+  local: False
+  role : gateway
+  
+RPiF:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/dataF
+  downStream: sensingdata_F
+  room: mnist_F
+  sensor: sensorF
+  local: True
+  role : sensor
+  
+RPiG:
+  btAddress: B8:27:EB:F3:2D:09
+  dataFilePaths:
+    - data/mnist_G
+  downStream: sensingdata_G
+  room: roomG
+  sensor: sensorG
+  local: False
+  role : sensor

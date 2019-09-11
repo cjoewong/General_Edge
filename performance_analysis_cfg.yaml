@@ -11,8 +11,8 @@ RPiA:
   downStream: sensingdata_A
   room: roomA
   sensor: sensorA
-  local: True
-  role : sensor
+  local: False
+  role : gateway
   
 RPiB:
   btAddress: B8:27:EB:F3:2D:09
@@ -61,7 +61,7 @@ RPiF:
   downStream: sensingdata_F
   room: roomF
   sensor: sensorF
-  local: False
+  local: True
   role : sensor
   
 RPiG:

@@ -32,10 +32,9 @@ def initializeTable(nameOfTable, hashKey, rangeKey, hashVal, rangeVal):
 
 # Initialize all the required tables
 # remote data
-initializeTable('mnist_A', 'forum', 'subject', 'roomA', 'sensorA')
-initializeTable('mnist_B', 'forum', 'subject', 'roomB', 'sensorB')
-initializeTable('mnist_C', 'forum', 'subject', 'roomC', 'sensorC')
-
+initializeTable('mnist_A', 'forum', 'subject', 'roomA', 'mnist1000')
+initializeTable('mnist_B', 'forum', 'subject', 'roomB', 'mnist1000')
+initializeTable('mnist_C', 'forum', 'subject', 'roomC', 'mnist1000')
 initializeTable('sensingdata_A', 'forum', 'subject', 'roomA', 'sensorA')
 initializeTable('sensingdata_B', 'forum', 'subject', 'roomB', 'sensorB')
 initializeTable('sensingdata_C', 'forum', 'subject', 'roomC', 'sensorC')
@@ -45,3 +44,4 @@ initializeTable('sensingdata_F', 'forum', 'subject', 'roomF', 'sensorF')
 initializeTable('sensingdata_G', 'forum', 'subject', 'roomG', 'sensorG')
 # feature
 initializeTable('testresult', 'environment', 'sensor', 'roomA', 'sensorA&B&C')
+initializeTable('mnresult', 'environment', 'sensor', 'roomA_mnist_1000', 'test_mnist_1000')

@@ -42,7 +42,7 @@ class LinearRegression(AlgorithmBase):
         """
         self._logger.info('LinearRegression train start...')
         start_time = time.time()
-        print("Local Computation : ",self._config.get("local", True))
+        #print("Local Computation : ",self._config.get("local", True))
         self._local = self._config.get("local", True)
         train_data = kwargs.get("train_data", [])
         X, y = self.get_data(train_data)
@@ -133,11 +133,12 @@ class LinearRegression(AlgorithmBase):
                 learning_rate = learning_rate / 2
 
             count = count + 1
-            if count % 20 == 0:
-                print(str(count), " iterations so far...")
+            #if count % 5 == 0:
+                #print('Error : ',E_new)			
+                #print(str(count), " iterations so far...")
 
             # Test if restricting iterations affects the quality
-            if count == 50:
+            if count == 25:
                 break
 
         return w_new, 0
@@ -168,6 +169,7 @@ class LinearRegression(AlgorithmBase):
         # No Local computation -- Send only Data
 		
         if not self._local:
+            #print('In here tho')
             X = self._down_stream_data.get('x')
             y = self._down_stream_data.get('y')
 
@@ -187,25 +189,29 @@ class LinearRegression(AlgorithmBase):
         # Local computation -- Send calculated weights only 		
 		
         else:
+            #print('This is correct')
             w = self._down_stream_data.get('w')
             b = self._down_stream_data.get('b')
             item['feature_A'] = Decimal(str(float(w[0])))
             item['feature_B'] = Decimal(str(float(w[1])))
             item['feature_C'] = Decimal(str(float(w[2])))
             processed_data_size = w.nbytes
+            item.pop('aggregated_data', None)
 
         item['bt_time'] = Decimal(str(bt_time))
         item['processed_data_size'] = Decimal(str(processed_data_size))
         item['calculation_time'] = Decimal(str(self.process_time))
         end_time = time.time()
-        print('End Time : ',end_time)
-
+        #print('End Time : ',end_time)
+		
+        #print(item)
+		
         upload_time = end_time - start_time
         item['upload_time'] = Decimal(str(upload_time))
         item['timestamp'] = Decimal(str(end_time))
+        #item.pop('forum', None)
+        #item.pop('subject', None)
+        #print(item)
         table.addItem(item)
-        item.pop('aggregated_data', None)
-        item.pop('forum', None)
-        item.pop('subject', None)
 
         self._logger.info('Data sent to Dynamo...')

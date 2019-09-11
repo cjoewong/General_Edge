@@ -6,6 +6,7 @@ import numpy as np
 import time
 import logging
 import pickle
+import csv
 
 class Sigmoid:
     def forward(self, x):
@@ -65,17 +66,20 @@ class MNISTNetwork(AlgorithmBase):
     def run(self, **kwargs):
         self._logger.info('MNIST network train start...')
         start_time = time.time()
-        print(self._config.get("local", True))
+        #print(self._config.get("local", True))
         self._local = self._config.get("local", True)
         train_data = kwargs.get("train_data", [])
-        print(train_data)
+        weights = kwargs.get("weights", None)
+        iterations = kwargs.get("iterations", 20)
+        batch_size = kwargs.get("batch_size", 100)
+		
         X, y = self.get_data(train_data[0].get("data"))
         if not self._local:
             self._down_stream_data = {'x': X, 'y': y}
             self._logger.info('MNIST network skip train...')
             return
 
-        W = self.neural_network(X, y)
+        W = self.neural_network(X, y, iterations, batch_size, weights)
         self._down_stream_data = {'w': W}
         end_time = time.time()
         self.process_time = end_time - start_time
@@ -89,35 +93,73 @@ class MNISTNetwork(AlgorithmBase):
     def cleanup(self):
         pass
 
-    def neural_network(self, images, labels):
+    def neural_network(self, images, labels, iterations, batch_size,W=None):
         init_lr = 0.01
-        epoch = 20
-        batch_size = 100
-        D = 28
-        O = 10
+        epoch = iterations
+        batch_size = batch_size
+        D  = 28
+        L1 = 32
+        O  = 10
+        file_name = 'accuracies_'+str(epoch)+'_'+str(batch_size)+'.csv'
         indexes = np.arange(labels.shape[0])
-        W = init_weight(D*D+1, O)
+        if(W is not None):
+            W  = init_weight(D*D+1, L1)
+            W1 = init_weight(L1, O)
+            print("Shape of W1 : ",np.shape(W1))
+        else:
+            W = W.reshape(D*D+1,L1)
+            W1 = W1.reshape(L1,O)
+        accuracies = []
         for e in range(epoch):
-            print("start epoch {0}".format(e+1))
+            #print("start epoch {0}".format(e+1))
             pos = 0
             lr = init_lr/(e//10 + 1)
             np.random.shuffle(indexes)
             while pos < indexes.shape[0]:
+                #print("Shape of W : ",np.shape(W))
+                #print("Shape of W1: ",np.shape(W1))
                 batch_data = images[indexes[pos:pos+batch_size]]
                 batch_label = labels[indexes[pos:pos+batch_size]]
                 pos += batch_size
                 b1 = np.ones((batch_data.shape[0], 1))
                 data = np.concatenate((batch_data, b1), axis=1)
                 activation = Sigmoid()
+                activation_2 = Sigmoid()
                 # Initialize weight as uniform distribution.
-                z = softmax(activation(np.dot(data, W)))
-                pred = np.argmax(z, axis=1)[:,None]
+                z_l0 = activation(np.dot(data, W))
+                #print("Shape of z_l0 : ",np.shape(z_l0))				
+                z_l1 = softmax(activation_2(np.dot(z_l0, W1)))
+                #print("Shape of z_l1 : ",np.shape(z_l1))
+                pred = np.argmax(z_l1, axis=1)[:,None]
                 oh_label = one_hot(batch_label)
-                L = oh_label*np.log(z)+(1-oh_label)*np.log(1-z)
+                L = oh_label*np.log(z_l1)+(1-oh_label)*np.log(1-z_l1)
                 #dL = -(oh_label/z - (1-oh_label)/(1-z))*activation.derivative()
-                dL = (z - oh_label)*activation.derivative()
-                dW = 1/batch_label.shape[0]*np.dot(data.T, dL)
+				
+                predictions = []
+                for single_op in z_l1:
+                    result = np.where(single_op == np.amax(single_op))[0]
+                    predictions.append(result[0])
+                accuracies.append((np.sum(np.equal(predictions,batch_label))/len(predictions))*100)
+				
+                line = accuracies
+						
+                dL1 = (z_l1 - oh_label)*activation_2.derivative()
+                #print("Shape of dL1 : ",np.shape(dL1))				
+                dW1 = np.dot(z_l0.T, dL1)/batch_label.shape[0]
+                #print("Shape of dW1 : ",np.shape(dW1))				
+                dL = np.dot(W1,dL1.T).T*activation.derivative()
+                #print("Shape of dL : ",np.shape(dL))
+                dW = np.dot(data.T,dL)/batch_label.shape[0]
+                #print("Shape of dW : ",np.shape(dW))
+                
+                W1 -= lr*dW1
                 W -= lr*dW
+                print("Loss = ",np.mean(np.abs(L)))
+                #print()
+        with open(file_name, 'a') as writeFile:
+            writer = csv.writer(writeFile)
+            writer.writerow(accuracies)
+            writeFile.close()
         return W
 
     def send(self, **kwargs):
@@ -129,8 +171,11 @@ class MNISTNetwork(AlgorithmBase):
 
         start_time = time.time()
         table = Table(self._config.get('downStream'))
+        #print('Downstream Table : ',table)
         room = self._config.get('room')
+        #print('Downstream Room : ',room)
         sensor = self._config.get('sensor')
+        #print('Downstream Sensor : ',sensor)
 
         # Prepare the upload payload
         item = table.getItem({
@@ -152,7 +197,7 @@ class MNISTNetwork(AlgorithmBase):
 
         else:
             w = self._down_stream_data.get('w')
-            item['weight'] = pickle.dumps(w)
+            item['weight'] = pickle.dumps(w,protocol=2)
 
         item['bt_time'] = Decimal(str(bt_time))
         item['calculation_time'] = Decimal(str(self.process_time))

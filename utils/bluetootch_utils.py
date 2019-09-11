@@ -15,7 +15,7 @@ def listenOnBluetooth(channel):
     """
     logger = logging.getLogger()
     # The # of unaccepted connection before refusing new connections
-    allowableUnacceptedConns = 1
+    allowableUnacceptedConns = 5
     # Receive up to this number of buffersize bytes from the socket
     bufferSize = 1
 
@@ -39,6 +39,7 @@ def listenOnBluetooth(channel):
             # We need a break statement because when no data is available,
             # recv() blocks until at least one byte is available
             if len(data_1) == 0:
+                server_sock.close()			 
                 break
             # Append the received data to the helper variable
             total_data.append(data_1)
@@ -61,9 +62,13 @@ def listenOnBluetooth(channel):
 
     # Close the bluetooth connection
     client_sock.close()
-    server_sock.close()
-
-    return bt_time, pickle.loads(b''.join(total_data))
+    server_sock.close()	
+    try:
+        to_return = pickle.loads(b''.join(total_data))
+    except:
+        to_return = 'NaN'
+		
+    return bt_time, to_return
 
 
 def sendData(data, target_address, channel):

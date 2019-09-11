@@ -52,5 +52,5 @@ class LinearRegressionDataCollector(DataCollectorBase):
                         continue
                     raw_data.append(attr)
 
-        print('Collect data: {0}'.format(len(raw_data)))
+        #print('Collect data: {0}'.format(len(raw_data)))
         self._data = {"from_pi": self._name, "data": raw_data}
