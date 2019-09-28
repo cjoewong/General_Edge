@@ -69,13 +69,7 @@ def put_data(q,flag):
 	while(1):
 		sensor_node.run()
 		rx_data = sensor_node._data #BT.listenOnBluetooth(1)
-		#print(rx_data)
 		q.put(rx_data)
-		#print()
-		#print("Data Received from ",id)
-		#print("Length of Queue : ",q.qsize())
-		#print(time.time(),",",q.qsize())
-		#print()
 		if(flag.value==1):
 			print("I'm done too.")
 			break
@@ -109,9 +103,7 @@ def print_stack(q,flag):
 		
 		t_start = time.time()
 		current_data 	= q.get()
-		#print('Current Data is ',current_data)
 		total_bt_time 	= time.time()
-		#current_data 	= current_data[0]
 		
 		try:
 			id = current_data.get('from_pi')
@@ -122,148 +114,16 @@ def print_stack(q,flag):
 			if(current_data):
 				t_get_weights = time.time()
 				try:
-					#record = table.getItem({'environment' : 'roomA', 'sensor' : 'sensorA&B&C'})
-					#weights = record['features']
 					w_1 = record['w_1']
 					w_2 = record['w_2']
 				except:
 					w_1 = 1
 					w_2 = 1
-				t_algo = time.time()
+					
 				gateway_node.run(train_data=current_data,w_1=w_1,w_2=w_2)
-
-#------------------------------------------------------------------------------------------------------------------------------------------------
-				# Tx Time Prediction
-				#
-				# Additional variables : Number of required time data, threshold time, window size, change detection threshold
-				#
-				# Check if total number of stored times is enough
-				if len(tx_times)>min_times:
-				# If enough:
-				# Meta algo : Fit all stored times to a distribution
-					t_tx = time.time()
-					gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
-					t_end = time.time()
-					
-					min_ks = 1
-					
-					for dist in distribs:
-						model_params = dist.fit(tx_times)
-						ks_stat,p_val = spstats.kstest(tx_times,dist.name,[*dist.fit(tx_times)])
-						if(ks_stat<min_ks):
-							min_ks = ks_stat
-							optimal_params = model_params
-							optimal_dist = dist
-							prob_dist = dist.pdf(np.linspace(0, linspace_size, res),*optimal_params)
-							print('Minimum KS is ',min_ks,'for distribution ',dist.name)
-
-					tx_probs = []
-					for time_val in tx_times:
-						tx_probs.append(predict.get_prob(time_val,prob_dist,linspace_size,res))
-					tx_probs_norm = (np.array(tx_probs)/max(tx_probs))*100
-				
-				# Map trend using stored times --> Kalman Filter
-					trend = predict.kalman_filter(tx_probs_norm,200)
-					
-				# Detect change?
-					avg_log,change_var,change_detected = predict.detect_change(trend,threshold,window_size)
-					avg_log = np.array(avg_log)/max(avg_log)
-					change_var = np.array(change_var)/max(change_var)
-					wt = 0.5
-					combination = wt*avg_log+(1-wt)*change_var
-					change_pt = combination[-window_size-1]
-					#print('Combination ',combination)
-					#print('Avg Log ',avg_log)
-					#print('Var Log ',change_var)
-					
-					line = [run, int(time.time()), optimal_dist.name, min_ks, optimal_params, t_end-t_tx, change_pt]
-					with open('ks_data.csv', 'a') as writeFile:
-						writer = csv.writer(writeFile)
-						writer.writerow(line)
-					
-				# If change detected:
-					print(change_pt)
-					if(change_pt>0.8 and min_ks<ks_threshold):
-						print('Change Detected')
-						
-					# Select all points before change --> Assign to a distribution, store parameters
-						windows.append(tx_times[:-window_size-1])
-						
-					# Select all points after change --> Assign to a distribution, store parameters, treat as new current distribution
-						tx_times = []
-						
-					# Predict expected value of distribution
-						expected = []
-						for i in range(0,len(prob_dist),10):
-							expected.append(prob_dist[i]*i/10)
-						prediction = sum(expected)
-						
-					# If sample > threshold:
-						if(prediction>time_threshold):
-						
-					# Local computation with 50% probability
-							if(np.random.rand()<0.5):
-								print('Local Computation')
-								
-					# Remote computation
-							else:
-								print('Remote Computation')
-								
-				# If not enough:
-				else:
-				# 			Append to list of stored weights
-					t_tx = time.time()
-					gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
-					t_end = time.time()
-					print("Tx time : ",t_end-t_tx)
-				tx_times.append(t_end-t_tx)
-				run += 1
-				
-#--------------------------------------------------------------------------------------------------------------------------------------------------
+				gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
 				gateway_node.cleanup()
-				
-				algo_times.append(t_tx-t_algo)
-				get_db_times.append(t_algo-t_get_weights)
-				push_db_times.append(t_end-t_tx)
-				
-				t_get_prob = t_end-t_tx
-				
-				# Process Times
-				
-				# Get mean and variance of 
-				switcher = 0
-				if(len(push_db_times)>0 and switcher  == 1):
-					
-					saved_times = []
-					with open('time_data.csv', 'r') as readFile:
-						reader = csv.reader(readFile)
-						lines = list(reader)
-						lines = lines[1:]
-						for entry in lines:
-							saved_times.append(float(entry[2]))
-					
-					#print("Saved Times : ",saved_times)
-						
-						
-					ae, loce, scalee = spstats.alpha.fit(saved_times)
-					x = np.linspace(0, 100, res)
-					p = spstats.alpha.pdf(x,ae, loce, scalee)
-					idx = int(t_get_prob*res/100)
-					try:
-						prob_to_save = p[idx]
-					except:
-						prob_to_save = 0
-					print('Probability of ',t_get_prob,' is ',prob_to_save)
-					
-					lines = [ssid,str(int(time.time())),str(t_get_prob),str(prob_to_save)]
-					with open('time_data.csv', 'a') as writeFile:
-						writer = csv.writer(writeFile)
-						writer.writerow(lines)
-						
-					writeFile.close()
-				
-				#print("Total time : ",t_end-t_start)
-				#print(time.time(),",",q.qsize())
+							
 				print('Waiting...')
 				print( )
 				time.sleep(25)
@@ -271,9 +131,6 @@ def print_stack(q,flag):
 			else:
 				print('No data received')
 				time.sleep(5)
-#gateway_node.run(train_data=train_data,w_1=w_1,w_2=w_2)
-#gateway_node.send(down_addr=down_addr, bt_time=total_bt_time)
-#gateway_node.cleanup()
 
 print("Creating processes")
 
